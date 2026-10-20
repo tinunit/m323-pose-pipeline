@@ -19,7 +19,7 @@ Ihr baut eine Pipeline, die auf Bildern Personen erkennt, Gelenkpunkte (Keypoint
 2. Name z.B. `m323-pose-<eure-namen>`, Sichtbarkeit **Private**, dann **Create repository**.
 3. Im neuen Repo: **Settings → Collaborators → Add people**:
    - die **Teampartnerin / den Teampartner**,
-   - die **Lehrperson** (GitHub: `vonrotzmartinandreas-spec`).
+   - die **Lehrperson** (GitHub: `tinunit`).
 4. Beide klonen das neue Repo und richten es ein:
 
    ```bash

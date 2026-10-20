@@ -69,7 +69,7 @@ Ihr arbeitet **zu zweit**. Teilt euch die Funktionen auf, aber lest den Code des
 2. Name z.B. `m323-pose-<eure-namen>`, Sichtbarkeit **Private**, dann **Create repository**.
 3. Im neuen Repo: **Settings → Collaborators → Add people**:
    - die **Teampartnerin / den Teampartner**,
-   - die **Lehrperson** (GitHub: `vonrotzmartinandreas-spec`).
+   - die **Lehrperson** (GitHub: `tinunit`).
 4. Beide klonen das neue Repo und richten es ein:
 
    ```bash
