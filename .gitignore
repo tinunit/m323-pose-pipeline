@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+out/
+data/coco8-pose-ds/
+*.pt
+*.mp4
+*.mov
+# eigene Fotos
+eigene/
