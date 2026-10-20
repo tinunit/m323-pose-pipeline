@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
+<defs>
+<marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 Z" fill="#555555"/></marker>
+</defs>
+<rect x="0" y="0" width="1200" height="700" fill="#FFFFFF"/>
+<rect x="40" y="40" width="130" height="46" rx="10" fill="#F2F2F2" stroke="#333333" stroke-width="2"/>
+<text x="105.0" y="70" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0</text>
+<text x="105.0" y="116" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Klasse</text>
+<text x="105.0" y="140" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">(0 = Person)</text>
+<rect x="182" y="40" width="280" height="46" rx="10" fill="#FFF4CC" stroke="#F2B701" stroke-width="2"/>
+<text x="322.0" y="70" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.193 0.405 0.365 0.711</text>
+<text x="322.0" y="116" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Box: cx cy w h</text>
+<rect x="474" y="40" width="165" height="46" rx="10" fill="#FFFFFF" stroke="#666666" stroke-width="2"/>
+<text x="556.5" y="70" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.276 0.172 2</text>
+<text x="556.5" y="116" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkt 0:</text>
+<text x="556.5" y="140" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Nase</text>
+<rect x="651" y="40" width="165" height="46" rx="10" fill="#E6E6E6" stroke="#666666" stroke-width="2"/>
+<text x="733.5" y="70" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.305 0.152 2</text>
+<text x="733.5" y="116" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkt 1:</text>
+<text x="733.5" y="140" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Auge links</text>
+<rect x="828" y="40" width="165" height="46" rx="10" fill="#FFFFFF" stroke="#666666" stroke-width="2"/>
+<text x="910.5" y="70" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.243 0.155 2</text>
+<text x="910.5" y="116" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkt 2:</text>
+<text x="910.5" y="140" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Auge rechts</text>
+<rect x="1005" y="40" width="165" height="46" rx="10" fill="#F7F7F7" stroke="#BBBBBB" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="1087.5" y="70" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#AAAAAA">0 0 0</text>
+<text x="1087.5" y="116" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#999999">Punkt 3: Ohr links</text>
+<text x="1087.5" y="140" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#999999">nicht markiert</text>
+<rect x="40" y="190" width="165" height="46" rx="10" fill="#E6E6E6" stroke="#666666" stroke-width="2"/>
+<text x="122.5" y="220" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.185 0.150 2</text>
+<text x="122.5" y="266" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkt 4:</text>
+<text x="122.5" y="290" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Ohr rechts</text>
+<text x="272.0" y="221" font-family="Menlo, Consolas, monospace" font-size="24" font-weight="bold" text-anchor="middle" fill="#222222">…</text>
+<text x="272.0" y="266" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkte</text>
+<text x="272.0" y="290" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">5 bis 14</text>
+<rect x="339" y="190" width="165" height="46" rx="10" fill="#FFFFFF" stroke="#666666" stroke-width="2"/>
+<text x="421.5" y="220" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.334 0.895 1</text>
+<text x="421.5" y="266" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkt 15:</text>
+<text x="421.5" y="290" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Fussgelenk links</text>
+<rect x="516" y="190" width="165" height="46" rx="10" fill="#E6E6E6" stroke="#666666" stroke-width="2"/>
+<text x="598.5" y="220" font-family="Menlo, Consolas, monospace" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">0.151 0.911 1</text>
+<text x="598.5" y="266" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Punkt 16:</text>
+<text x="598.5" y="290" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#222222">Fussgelenk rechts</text>
+<rect x="60" y="520" width="310" height="60" rx="10" fill="#FFFFFF" stroke="#666666" stroke-width="2"/>
+<text x="130" y="561" font-family="Menlo, Consolas, monospace" font-size="30" font-weight="normal" text-anchor="middle" fill="#222222">0.276</text>
+<text x="240" y="561" font-family="Menlo, Consolas, monospace" font-size="30" font-weight="normal" text-anchor="middle" fill="#222222">0.172</text>
+<text x="322" y="561" font-family="Menlo, Consolas, monospace" font-size="30" font-weight="normal" text-anchor="middle" fill="#222222">2</text>
+<polyline points="130,516 130,375 426,375" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<text x="440" y="381" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="normal" text-anchor="start" fill="#222222">x = 0.276  →  27.6 % der Bildbreite</text>
+<polyline points="240,516 240,425 426,425" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<text x="440" y="431" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="normal" text-anchor="start" fill="#222222">y = 0.172  →  17.2 % der Bildhöhe (von oben)</text>
+<polyline points="322,516 322,475 426,475" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<text x="440" y="481" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="normal" text-anchor="start" fill="#222222">v = 2  →  Sichtbarkeit: 0 = nicht markiert, 1 = verdeckt, 2 = sichtbar</text>
+<text x="600.0" y="650" font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="bold" text-anchor="middle" fill="#222222">1 + 4 + 17 × 3 = 56 Zahlen pro Person</text>
+</svg>

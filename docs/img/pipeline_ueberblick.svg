@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640">
+<defs>
+<marker id="ah" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 Z" fill="#555555"/></marker>
+</defs>
+<rect x="0" y="0" width="1200" height="640" fill="#FFFFFF"/>
+<rect x="15" y="40" width="210" height="110" rx="10" fill="#FFF4CC" stroke="#F2B701" stroke-width="2"/>
+<text x="120.0" y="77.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">Labels (.txt)</text>
+<text x="120.0" y="101.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#444444">COCO8: von Menschen</text>
+<text x="120.0" y="125.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#444444">markiert</text>
+<rect x="255" y="40" width="210" height="110" rx="10" fill="#F2F2F2" stroke="#333333" stroke-width="2"/>
+<text x="282" y="109.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#333333">1</text>
+<text x="309" y="89.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">Daten laden</text>
+<text x="309" y="113.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Text → Person</text>
+<rect x="495" y="40" width="210" height="110" rx="10" fill="#F2F2F2" stroke="#333333" stroke-width="2"/>
+<text x="522" y="109.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#333333">3</text>
+<text x="549" y="89.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">Filtern</text>
+<text x="549" y="113.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Bilder auswählen</text>
+<rect x="15" y="210" width="210" height="110" rx="10" fill="#F2F2F2" stroke="#0096C7" stroke-width="2"/>
+<text x="120.0" y="259.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">Bilder (.jpg)</text>
+<text x="120.0" y="283.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="middle" fill="#444444">8 Bilder, train / val</text>
+<rect x="255" y="210" width="210" height="110" rx="10" fill="#D9F2FA" stroke="#0096C7" stroke-width="2"/>
+<text x="282" y="279.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#0096C7">4</text>
+<text x="309" y="247.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">YOLO-Inferenz</text>
+<text x="309" y="271.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Bild → Person</text>
+<text x="309" y="295.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">(Vorhersage)</text>
+<rect x="735" y="40" width="210" height="280" rx="10" fill="#F2F2F2" stroke="#333333" stroke-width="2"/>
+<text x="762" y="194.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#333333">5</text>
+<text x="789" y="150.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">Auswerten</text>
+<text x="789" y="174.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Label vs.</text>
+<text x="789" y="198.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Vorhersage</text>
+<text x="789" y="222.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">→ PCK</text>
+<rect x="975" y="130.0" width="210" height="100" rx="10" fill="#E3F4EA" stroke="#2E8B57" stroke-width="2"/>
+<text x="1080.0" y="174.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">PCK pro Bild</text>
+<text x="1080.0" y="198.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">+ gesamt</text>
+<rect x="495" y="360" width="210" height="90" rx="10" fill="#F2F2F2" stroke="#333333" stroke-width="2"/>
+<text x="522" y="419.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#333333">2</text>
+<text x="549" y="399.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">Geometrie</text>
+<text x="549" y="423.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Pixel, Winkel</text>
+<rect x="15" y="500" width="210" height="110" rx="10" fill="#F2F2F2" stroke="#0096C7" stroke-width="2"/>
+<text x="120.0" y="561.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">Video (.mp4)</text>
+<rect x="255" y="500" width="210" height="110" rx="10" fill="#D9F2FA" stroke="#0096C7" stroke-width="2"/>
+<text x="282" y="569.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#0096C7">4</text>
+<text x="309" y="549.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">YOLO pro</text>
+<text x="309" y="573.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">Videobild</text>
+<rect x="495" y="500" width="210" height="110" rx="10" fill="#F2F2F2" stroke="#333333" stroke-width="2"/>
+<text x="522" y="569.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#333333">6</text>
+<text x="549" y="537.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#222222">Video</text>
+<text x="549" y="561.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Winkel über</text>
+<text x="549" y="585.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#444444">Zeit, zählen</text>
+<rect x="735" y="500" width="210" height="110" rx="10" fill="#E3F4EA" stroke="#2E8B57" stroke-width="2"/>
+<text x="840.0" y="537.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">Anzahl</text>
+<text x="840.0" y="561.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">Wiederholungen /</text>
+<text x="840.0" y="585.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#222222">eure Analyse</text>
+<rect x="985" y="520" width="200" height="80" rx="10" fill="#FAFAFA" stroke="#AAAAAA" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="1012" y="574.0" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#AAAAAA">7</text>
+<text x="1039" y="554.0" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="start" fill="#777777">Bonus:</text>
+<text x="1039" y="578.0" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#777777">Spiegeln</text>
+<polyline points="229,95.0 251,95.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="469,95.0 491,95.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="709,95.0 731,95.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="229,265.0 251,265.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="469,265.0 731,265.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="949,180.0 971,180.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="229,555.0 251,555.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="469,555.0 491,555.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="709,555.0 731,555.0" fill="none" stroke="#555555" stroke-width="2" marker-end="url(#ah)"/>
+<polyline points="709,405 840.0,405 840.0,324" fill="none" stroke="#555555" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ah)"/>
+<polyline points="600.0,454 600.0,496" fill="none" stroke="#555555" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#ah)"/>
+<text x="721" y="431" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="normal" text-anchor="start" fill="#555555" font-style="italic">wird benutzt von</text>
+</svg>

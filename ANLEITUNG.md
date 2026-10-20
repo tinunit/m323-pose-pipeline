@@ -19,13 +19,7 @@ Ihr baut eine Pipeline, die auf Bildern Personen erkennt, Gelenkpunkte bestimmt,
 
 **Die Pipeline in einem Satz:** Bild rein, Personen mit 17 Gelenkpunkten raus, mit den Labels vergleichen, daraus Winkel berechnen und Bewegungen zählen.
 
-```
-Labels (.txt) ─► Schritt 1: laden ─┐
-                                   ├─► Schritt 3: filtern ─► Schritt 5: auswerten (PCK)
-Bilder (.jpg) ─► Schritt 4: YOLO ──┘                              ▲
-                      │                                           │
-                      └─► Schritt 2: Pixel, Kniewinkel ──► Schritt 6: Video, Wiederholungen zählen
-```
+![Überblick über die Pipeline mit den Schritten 1 bis 7](docs/img/pipeline_ueberblick.svg)
 
 ### Daten und Modell
 
@@ -146,11 +140,8 @@ Es gibt **keine Mund-Punkte**: Das Gesicht besteht aus Nase, Augen und Ohren. "L
 
 Pro Person eine Zeile in `data/coco8-pose/labels/*/<bild>.txt`. Hier die erste Person aus `000000000113.txt` (der Mann in den Abbildungen), Zahlen auf 3 Stellen gekürzt:
 
-```
-0  0.193 0.405 0.365 0.711   0.276 0.172 2   0.305 0.152 2   0.243 0.155 2   0 0 0   0.185 0.150 2   ...   0.334 0.895 1   0.151 0.911 1
-└┬┘ └──────────┬─────────┘   └────────┬────┘ └───────┬─────┘ └─────┬─────┘ └──┬──┘ └─────┬─────┘         └────┬────┘     └────┬────┘
-Klasse  Box: cx cy w h         Punkt 0 (Nase) Punkt 1 (l. Auge) Punkt 2 (r. Auge) Punkt 3  Punkt 4                Punkt 15      Punkt 16
-```
+
+![Eine Label-Zeile, Feld für Feld zerlegt](docs/img/label_zeile.svg)
 
 Aufbau: `Klasse | cx cy w h | (x y v) × 17` = 1 + 4 + 51 = **56 Zahlen**.
 
@@ -366,11 +357,7 @@ Zusätzlich: `ds["train"].filter(all_of(any_person(min_labelled(12)), max_person
 
 So hängen die Funktionen zusammen:
 
-```
-batch["image"] ─► get_model(...).predict(...) ─► ein Ergebnis r pro Bild
-    r ─► _persons_of(r): .xywhn/.conf/.xyn/.conf als Listen ─► result_to_persons ─► Personen
-    Personen ─► person_to_row ─► {"pred": ...}                (predict_batch)
-```
+![Datenfluss in predict_batch: vom Bild zur neuen Spalte pred](docs/img/yolo_datenfluss.svg)
 
 **Hinweis:** Die API aus Kapitel 1, in Teilen:
 
@@ -419,6 +406,8 @@ Fragen für euch (fürs Journal): Funktioniert die Erkennung gut? Wie ändert si
 ### Schritt 5: Auswerten
 
 **Ziel:** Messen, wie gut die Vorhersagen sind: **PCK**, der Anteil der Punkte, die nahe genug am Label liegen.
+
+![PCK: richtig, wenn der vorhergesagte Punkt im Toleranzkreis liegt](docs/img/pck_toleranz.svg)
 
 **Idee:** Ein vorhergesagter Punkt ist "richtig", wenn er höchstens `ALPHA × Personengrösse` vom Label-Punkt entfernt ist (Personengrösse = grössere Seite der Label-Box, in Pixeln). Gezählt werden nur **markierte** Label-Punkte.
 
@@ -469,6 +458,8 @@ Filmt euch gegenseitig: etwa 10 Kniebeugen, **von der Seite**, ganzer Körper im
 | `ema(xs, alpha)` | **Liste von Winkeln** + `alpha` (`float`, 0..1) | **Liste** gleicher Länge, geglättet | `s_neu = alpha * x + (1 - alpha) * s_alt`, erster Wert bleibt. Leere Liste → `[]` |
 
 Die Winkel-Liste kommt aus dem gegebenen `angles` (pro Videobild ein Kniewinkel oder `None`), `None` entfernt das gegebene `drop_missing`.
+
+![Zustandsautomat up/down mit den Schwellen 100° und 160°](docs/img/zustandsautomat.svg)
 
 `step` hat **zwei Schwellen** (Hysterese): von `up` nach `down` unter `DOWN_BELOW` (100°), von `down` nach `up` über `UP_ABOVE` (160°), dabei zählt `count` eins hoch.
 
