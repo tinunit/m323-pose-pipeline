@@ -1,8 +1,11 @@
-"""Schritt 7 (optional, Bonus): Bilder spiegeln. Zufall kommt als Argument (Seed) herein."""
+"""Schritt 7 (optional): Bilder spiegeln. Zufall kommt als Argument (Seed) herein."""
 
 import random
 from typing import Callable
 
+from PIL import Image
+
+from pipeline.data import person_to_row, row_to_person
 from pipeline.types import Keypoint, Person
 
 # --- vorgegeben ---------------------------------------------------------------
@@ -10,49 +13,58 @@ from pipeline.types import Keypoint, Person
 FLIP_INDEX = (0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15)
 
 
-# --- eure Aufgabe -------------------------------------------------------------
+# --- Runde 1: eure Aufgabe ----------------------------------------------------
 def hflip_keypoint(k: Keypoint) -> Keypoint:
-    """Rein. Markierter Punkt (v > 0): Keypoint(1 - x, y, v). Nicht markiert: unverändert."""
+    """Rein. Einen normalisierten Keypoint horizontal spiegeln: x -> 1 - x.
+
+    Nur markierte Punkte (v > 0) werden gespiegelt; nicht markierte Punkte
+    (v = 0) bleiben unverändert, sonst entstünde aus (0, 0) ein Punkt bei x = 1.
+    """
     raise NotImplementedError
 
 
 def hflip_person(p: Person) -> Person:
-    """Rein. Alle Keypoints spiegeln, dann neu ordnen: neu[i] = gespiegelt[FLIP_INDEX[i]].
+    """Rein. Eine Person horizontal spiegeln (neue Person, Eingabe unverändert).
 
-    Box: cx wird 1 - cx (cy, w, h bleiben). score bleibt.
+    Alle Keypoints spiegeln, dann links und rechts neu ordnen (siehe
+    FLIP_INDEX: der neue Punkt i ist der gespiegelte Punkt FLIP_INDEX[i]).
+    Die Box-Mitte wird gespiegelt (cx -> 1 - cx), cy, w, h und score bleiben.
     """
     raise NotImplementedError
 
 
+# --- vorgegeben ---------------------------------------------------------------
 def hflip_row(row: dict) -> dict:
-    """Rein. Ein ganzes Dataset-Beispiel spiegeln, Pixel und Labels zusammen.
-
-    Bild mit image.transpose(Image.Transpose.FLIP_LEFT_RIGHT) (PIL), alle
-    Label-Personen mit hflip_person (row_to_person / person_to_row).
-    Die Spalte "pred" wird entfernt, weil sie neu berechnet werden muss.
-    Die Eingabe darf nicht verändert werden.
-    """
-    raise NotImplementedError
+    """Bild und alle Label-Personen zusammen spiegeln. Die Spalte pred entfällt."""
+    return {
+        **{k: v for k, v in row.items() if k != "pred"},
+        "image": row["image"].transpose(Image.Transpose.FLIP_LEFT_RIGHT),
+        "persons": [
+            person_to_row(hflip_person(row_to_person(d))) for d in row["persons"]
+        ],
+    }
 
 
 def seed_for(base_seed: int, epoch: int, idx: int) -> int:
-    """Rein. base_seed * 1_000_003 + epoch * 1_009 + idx"""
-    raise NotImplementedError
+    return base_seed * 1_000_003 + epoch * 1_009 + idx
 
 
 def random_hflip(row: dict, rng: random.Random) -> dict:
-    """Rein (gegeben rng). Mit Wahrscheinlichkeit 0.5 spiegeln (rng.random() < 0.5)."""
-    raise NotImplementedError
+    """Mit Wahrscheinlichkeit 0.5 spiegeln."""
+    return hflip_row(row) if rng.random() < 0.5 else row
 
 
 def make_transform(base_seed: int, epoch: int) -> Callable[[dict], dict]:
-    """Gibt eine Funktion für Dataset.with_transform zurück.
+    """Funktion für Dataset.with_transform: Batch (dict von Listen) rein, Batch raus."""
 
-    Die Funktion bekommt einen Batch (dict von Listen), zerlegt ihn in Zeilen,
-    wendet random_hflip mit random.Random(seed_for(base_seed, epoch, row["idx"]))
-    an und setzt den Batch wieder zu einem dict von Listen zusammen.
-    Tipp: Spalte "pred" im Batch weglassen, damit alle Zeilen dieselben Spalten haben.
-    Voraussetzung: das Dataset hat eine Spalte "idx"
-    (ds.map(lambda row, i: {"idx": i}, with_indices=True)).
-    """
-    raise NotImplementedError
+    def transform(batch: dict) -> dict:
+        # pred überall entfernen, sonst haben gespiegelte und ungespiegelte Zeilen andere Spalten
+        cols = {k: v for k, v in batch.items() if k != "pred"}
+        rows = [dict(zip(cols, values)) for values in zip(*cols.values())]
+        out = [
+            random_hflip(row, random.Random(seed_for(base_seed, epoch, row["idx"])))
+            for row in rows
+        ]
+        return {k: [r[k] for r in out] for k in cols}
+
+    return transform

@@ -6,8 +6,7 @@ Aufruf: uv run python run_squats.py video.mp4 [--side left|right] [--plot]
 import argparse
 from pathlib import Path
 
-from pipeline.inference import WEIGHTS
-from pipeline.reps import (  # noqa: F401
+from pipeline.reps import (
     DOWN_BELOW,
     UP_ABOVE,
     angles,
@@ -16,11 +15,12 @@ from pipeline.reps import (  # noqa: F401
     ema,
     frames,
 )
+from pipeline.inference import WEIGHTS
 
-ALPHA = 0.5  # Glättung, ausprobieren (siehe Aufgabe 9.2 c)
+ALPHA = 0.5
 
 
-def plot(raw: list, smooth: list[float], out: str = "out/angles.png") -> None:  # vorgegeben
+def plot(raw: list, smooth: list[float], out: str = "out/angles.png") -> None:
     import matplotlib
 
     matplotlib.use("Agg")
@@ -40,18 +40,18 @@ def plot(raw: list, smooth: list[float], out: str = "out/angles.png") -> None:  
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser()  # vorgegeben
+    ap = argparse.ArgumentParser()
     ap.add_argument("video")
     ap.add_argument("--side", choices=["left", "right"], default="left")
     ap.add_argument("--plot", action="store_true")
     args = ap.parse_args()
 
-    # TODO 1. Winkel pro Bild: raw = list(angles(frames(args.video), WEIGHTS, args.side))
-    # TODO 2. Fehlende Werte weglassen und glätten: smooth = ema(drop_missing(raw), ALPHA)
-    # TODO 3. Ausgeben: Anzahl Bilder, Anzahl Bilder ohne Winkel (raw.count(None))
-    #         und die Anzahl Kniebeugen: count_reps(smooth)
-    # TODO 4. Mit --plot das Diagramm zeichnen: plot(raw, smooth)
-    raise NotImplementedError("run_squats.py: TODO-Liste in main() abarbeiten")
+    raw = list(angles(frames(args.video), WEIGHTS, args.side))  # Bild für Bild (lazy)
+    smooth = ema(drop_missing(raw), ALPHA)
+    print(f"Bilder: {len(raw)}, ohne Person/Winkel: {raw.count(None)}")
+    print(f"Kniebeugen: {count_reps(smooth)}")
+    if args.plot:
+        plot(raw, smooth)
 
 
 if __name__ == "__main__":
