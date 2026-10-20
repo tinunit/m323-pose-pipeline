@@ -51,17 +51,44 @@ Weil beide am Ende als `Person` vorliegen, können wir sie direkt vergleichen (S
 | Teil | Zeit |
 |---|---|
 | Setup + Kapitel 1 (YOLO und Pose lesen) | 20 min |
-| Runde 1, Schritte 1 bis 6 | 2 h |
+| Runde 1, Schritte 1 bis 6a | 2 h |
 | Runde 2: Einstieg + Recherche im Betrieb | 30 min |
 | Runde 2: FP-Prinzipien an den Schritten 1 bis 6 | 60 min |
 | Journal fertig machen | 10 min |
+| **Zum Schluss:** Schritt 6b, eure eigene Analyse | so weit ihr kommt |
 | Schritt 7 | Bonus |
 
 ### Teams
 
 Ihr arbeitet **zu zweit**. Teilt euch die Funktionen auf, aber lest den Code des anderen: Ihr müsst am Schluss beide alles erklären können.
 
-### Setup
+### Voraussetzungen
+
+- Pro Person ein **GitHub-Konto**.
+- **git** und **uv** installiert. uv installieren:
+  - macOS / Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+  - Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+
+### Repo einrichten (einmal pro Team)
+
+1. **Eine Person** des Teams öffnet dieses Repo auf GitHub und klickt **"Use this template" → "Create a new repository"**.
+2. Name z.B. `m323-pose-<eure-namen>`, Sichtbarkeit **Private**, dann **Create repository**.
+3. Im neuen Repo: **Settings → Collaborators → Add people**:
+   - die **Teampartnerin / den Teampartner**,
+   - die **Lehrperson** (GitHub: `vonrotzmartinandreas-spec`).
+4. Beide klonen das neue Repo und richten es ein:
+
+   ```bash
+   git clone git@github.com:<euer-konto>/<euer-repo>.git
+   cd <euer-repo>
+   uv sync
+   ```
+
+**Nicht forken:** Ein Fork eines öffentlichen Repos ist selbst öffentlich, dann sieht die ganze Klasse euren Code. Mit "Use this template" bekommt ihr ein eigenes, privates Repo.
+
+**Zu zweit arbeiten:** Vor dem Arbeiten `git pull`, danach `git add`, `git commit`, `git push`. Am einfachsten teilt ihr die Funktionen eines Schritts auf und arbeitet in verschiedenen Dateien. Ein Commit pro Schritt, z.B. `git commit -m "Schritt 2: Geometrie"`.
+
+### Setup prüfen
 
 ```bash
 uv sync                # installiert alles (einmalig, dauert ein paar Minuten)
@@ -425,14 +452,11 @@ uv run python run_pipeline.py
 
 ### Schritt 6: Video
 
-**Ziel:** Ein eigenes Video auswerten. Das Thema ist offen, wählt etwas, das euch interessiert. Teams **filmen sich gegenseitig**: kurz, von der Seite, ganzer Körper, ruhige Kamera.
+**Ziel:** Bewegungen in Videos auswerten. Zuerst an einem festen Beispiel, den **Kniebeugen** (6a). Ganz am Schluss, nach Runde 2, untersucht ihr eine Bewegung, die **euch** interessiert (6b).
 
-**Optionen:**
+#### 6a: Beispiel Kniebeugen zählen
 
-- **Wiederholungen zählen:** Kniebeugen, Liegestütze, Hampelmann.
-- **Winkel über Zeit:** z.B. Kniewinkel in der Hockey-Stellung oder bei einem Schuss.
-- **Kampfsport:** Kicks zählen (Fussgelenk höher als Hüfte) oder die maximale Streckung des Beins messen.
-- **Links/rechts vergleichen:** Ist ein Bein beweglicher als das andere?
+Filmt euch gegenseitig: etwa 10 Kniebeugen, **von der Seite**, ganzer Körper im Bild, ruhige Kamera, 10 bis 20 Sekunden.
 
 **Gegeben** (`pipeline/reps.py`): `RepState`, `START`, die Schwellen (`DOWN_BELOW`, `UP_ABOVE`), `frames` (Generator, ein Bild nach dem anderen), `angles` (Kniewinkel pro Bild), `drop_missing`, `states`. `run_squats.py` komplett.
 
@@ -465,7 +489,54 @@ uv run pytest tests/test_reps.py -q
 uv run python run_squats.py video.mp4 --plot
 ```
 
-`run_squats.py` zählt Wiederholungen und speichert mit `--plot` den Winkelverlauf in `out/angles.png` (`--side right` für das rechte Bein). Für andere Auswertungen schreibt ihr ein eigenes kleines Skript, das `frames`, `angles` und eure Funktionen kombiniert. Videos kommen **nicht** ins Repo.
+`run_squats.py` zählt Wiederholungen und speichert mit `--plot` den Winkelverlauf in `out/angles.png` (`--side right` für das rechte Bein). Schaut euch den Plot an: Passen die Schwellen 100° und 160° zu euren Kniebeugen? Passt sie sonst an.
+
+#### 6b: Eure eigene Analyse
+
+**Das ist der letzte Teil: erst nach Runde 2, so weit ihr in der Zeit kommt.** Ihr wählt selbst, was ihr untersuchen wollt. Es gibt keine richtige Lösung: Wichtig ist, dass ihr eine Frage stellt, sie mit der Pipeline beantwortet und im Journal beschreibt, was funktioniert hat und was nicht.
+
+**Ideen:**
+
+| Thema | Mögliche Frage | Was man misst |
+|---|---|---|
+| Fussball, Hockey, Rugby | Wie tief geht ein Spieler in die Knie? Wie oft wird gesprintet? | Kniewinkel über Zeit, Position der Hüfte von Bild zu Bild |
+| Eishockey, Skaten | Wie stark ist die Beugung in der Grundstellung? Wie gleichmässig sind die Schritte? | Kniewinkel links und rechts, Rhythmus der Schritte |
+| Kampfsport | Wie viele Kicks? Wie hoch? Wie gestreckt ist das Bein? | Fussgelenk höher als Hüfte (`y` kleiner, `y` zeigt nach unten!), maximaler Kniewinkel pro Kick |
+| Krafttraining, Fitness | Liegestütze, Hampelmann, Ausfallschritte zählen | Ellbogen- oder Kniewinkel mit `step`/`count_reps` und eigenen Schwellen |
+| Wurf, Schuss, Schlag | Wie ist der Arm beim Abwurf gestreckt? | Ellbogenwinkel (Schulter, Ellbogen, Handgelenk: 6, 8, 10 bzw. 5, 7, 9) |
+| Links/rechts | Bewegt sich eine Seite anders als die andere? | dieselbe Messung für beide Seiten, Differenz |
+
+**Bausteine:** Ihr habt alles schon. Für andere Gelenke ruft ihr `angle_at` mit den passenden drei Punkten auf, für mehrere Personen nehmt ihr alle aus `predict_image` statt nur die erste:
+
+```python
+from PIL import Image
+from pipeline.reps import frames
+from pipeline.inference import predict_image, confident
+from pipeline.geometry import to_pixels, angle_at
+
+def elbow_angles(path, side_idx=(6, 8, 10)):          # lazy: ein Winkel pro Videobild
+    for frame in frames(path):
+        h, w = frame.shape[:2]
+        persons = predict_image(Image.fromarray(frame))
+        if not persons:
+            yield None
+            continue
+        p = to_pixels(confident(persons[0]), w, h)
+        a, b, c = (p.keypoints[i] for i in side_idx)
+        yield angle_at(a, b, c) if min(a.v, b.v, c.v) > 0 else None
+```
+
+Danach wie in 6a: `drop_missing`, `ema`, eigene Schwellen und `count_reps`, oder einfach `max(...)`, Mittelwert, ein Plot.
+
+**Gut zu wissen bei echten Sportvideos:**
+
+- **Mehrere Personen:** `predict_image` liefert alle erkannten Personen, sortiert nach Konfidenz, aber **ohne Identität**: Person 0 im einen Bild ist nicht unbedingt Person 0 im nächsten. Für eine bestimmte Person über die Zeit gibt es in Ultralytics `get_model(WEIGHTS).track(bild, persist=True)`: jede Person bekommt eine Nummer (`r.boxes.id`). Einfacher: ein Ausschnitt, in dem nur eine Person gut sichtbar ist.
+- **Kleine Personen** (Spieler weit weg) werden schlechter erkannt, Punkte werden unsicher. Nahaufnahmen funktionieren besser.
+- **Kamera:** Eine bewegte Kamera ist für Winkel egal, für Positionen (Sprint, Weg) nicht.
+- **Rechenzeit:** Auf der CPU schafft das Modell einige Bilder pro Sekunde. Nehmt kurze Clips (10 bis 30 Sekunden) oder wertet nur jedes zweite oder dritte Bild aus.
+- **Videos:** Am besten eigene Aufnahmen. Fremde Videos nur, wenn ihr sie verwenden dürft. Videos kommen **nicht** ins Repo, und filmt niemanden ohne Einverständnis.
+
+**Ergebnis:** euer Skript (z.B. `analyse.py`), ein Plot oder eine Tabelle in `out/` und ein Abschnitt im Journal: Frage, Vorgehen, Ergebnis, was nicht funktioniert hat.
 
 ### Schritt 7: Bonus: Spiegeln
 
@@ -681,7 +752,7 @@ Euer **privates** Repo (Lehrperson als Collaborator) mit:
 
 - [ ] allen Tests grün (`uv run pytest -q`)
 - [ ] `uv run python run_pipeline.py` läuft
-- [ ] Video-Ergebnis (Skript, Plot oder kurze Beschreibung; das Video selbst nicht committen)
+- [ ] Video: Kniebeugen gezählt (6a); eure eigene Analyse (6b) so weit ihr gekommen seid, mit Skript und Plot oder Tabelle. Die Videos selbst nicht committen
 - [ ] `journal.md` ausgefüllt
 - [ ] ein Commit pro Schritt, mit aussagekräftiger Nachricht
 

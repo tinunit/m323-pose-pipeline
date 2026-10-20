@@ -38,10 +38,18 @@ Pro Schritt: Was haben wir implementiert? Was war schwierig? Wo hat die KI gehol
 - **Schwierig:**
 - **KI (geholfen / falsch):**
 
-### Schritt 6: Video
-- **Was haben wir gefilmt und ausgewertet?**
+### Schritt 6a: Kniebeugen
 - **Implementiert:**
-- **Schwierig:**
+- **Gezählt / tatsächlich gemacht:**
+- **Schwellen angepasst? Warum?**
+- **KI (geholfen / falsch):**
+
+### Schritt 6b: Eigene Analyse
+- **Thema und Frage:**
+- **Video (Quelle, Länge, Perspektive):**
+- **Vorgehen (welche Punkte, welche Winkel oder Positionen, welche Funktionen):**
+- **Ergebnis (Zahl, Plot in `out/`):**
+- **Was hat nicht funktioniert, und warum?**
 - **KI (geholfen / falsch):**
 
 ### Schritt 7: Bonus (optional)

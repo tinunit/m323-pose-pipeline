@@ -5,6 +5,7 @@ requires-python = ">=3.11"
 dependencies = [
     "datasets>=5.1.0",
     "hypothesis>=6.170.5",
+    "lap>=0.5.13",
     "opencv-python>=5.0.0.93",
     "pytest>=9.1.1",
     "torch>=2.14.1",

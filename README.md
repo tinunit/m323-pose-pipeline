@@ -6,9 +6,31 @@ Ihr baut eine Pipeline, die auf Bildern Personen erkennt, Gelenkpunkte (Keypoint
 
 ## Setup
 
-```bash
-uv sync
-```
+### Voraussetzungen
+
+- Pro Person ein **GitHub-Konto**.
+- **git** und **uv** installiert. uv installieren:
+  - macOS / Linux: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+  - Windows (PowerShell): `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+
+### Repo einrichten (einmal pro Team)
+
+1. **Eine Person** des Teams öffnet dieses Repo auf GitHub und klickt **"Use this template" → "Create a new repository"**.
+2. Name z.B. `m323-pose-<eure-namen>`, Sichtbarkeit **Private**, dann **Create repository**.
+3. Im neuen Repo: **Settings → Collaborators → Add people**:
+   - die **Teampartnerin / den Teampartner**,
+   - die **Lehrperson** (GitHub: `vonrotzmartinandreas-spec`).
+4. Beide klonen das neue Repo und richten es ein:
+
+   ```bash
+   git clone git@github.com:<euer-konto>/<euer-repo>.git
+   cd <euer-repo>
+   uv sync
+   ```
+
+**Nicht forken:** Ein Fork eines öffentlichen Repos ist selbst öffentlich, dann sieht die ganze Klasse euren Code. Mit "Use this template" bekommt ihr ein eigenes, privates Repo.
+
+**Zu zweit arbeiten:** Vor dem Arbeiten `git pull`, danach `git add`, `git commit`, `git push`. Am einfachsten teilt ihr die Funktionen eines Schritts auf und arbeitet in verschiedenen Dateien. Ein Commit pro Schritt, z.B. `git commit -m "Schritt 2: Geometrie"`.
 
 ## Tests und Skripte
 
@@ -26,9 +48,4 @@ Startet alles im Projektordner.
 
 ## Arbeitsweise
 
-1. Auf GitHub **Use this template** wählen und ein **privates** Repo erstellen.
-2. Die Lehrperson als **Collaborator** einladen.
-3. Zu zweit arbeiten, **ein Commit pro Schritt**.
-4. Journal laufend ausfüllen.
-
-Eigene Fotos (`eigene/`) und Videos werden **nicht** committed.
+Journal (`journal.md`) laufend ausfüllen, ein Commit pro Schritt. Eigene Fotos (`eigene/`) und Videos werden **nicht** committed.
