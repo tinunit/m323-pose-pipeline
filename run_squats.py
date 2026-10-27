@@ -1,6 +1,6 @@
 """Kniebeugen in einem Video zählen.
 
-Aufruf: uv run python run_squats.py video.mp4 [--side left|right] [--plot]
+Aufruf: uv run python run_squats.py videos/kniebeugen.mp4 [--side left|right] [--plot]
 """
 
 import argparse

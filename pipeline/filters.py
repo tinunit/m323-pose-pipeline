@@ -1,4 +1,4 @@
-"""Schritt 3: Filtern mit Funktionen höherer Ordnung."""
+"""Filtern mit Funktionen höherer Ordnung (in der Schülerversion vorgegeben)."""
 
 from typing import Callable, Optional
 
@@ -7,45 +7,33 @@ from pipeline.geometry import knee_angle
 from pipeline.types import Person
 
 
-# --- vorgegeben ---------------------------------------------------------------
 def labelled(p: Person) -> int:
     """Anzahl markierter Keypoints (v > 0)."""
     return sum(1 for k in p.keypoints if k.v > 0)
 
 
-# --- Runde 1: eure Aufgabe ----------------------------------------------------
 def min_labelled(n: int) -> Callable[[Person], bool]:
-    """Gibt ein Prädikat zurück: hat die Person mindestens n markierte Keypoints?
+    """Prädikat: hat die Person mindestens n markierte Keypoints?
 
-    Funktion höherer Ordnung: min_labelled(8) ist selbst eine Funktion
-    Person -> bool. Markiert heisst v > 0 (siehe `labelled`).
+    Closure: `n` ist ein Parameter dieser Funktion, jeder Aufruf bekommt also
+    sein eigenes n (siehe bad/b3_late_binding.py).
     """
-    raise NotImplementedError
+    return lambda p: labelled(p) >= n
 
 
 def any_person(pred: Callable[[Person], bool]) -> Callable[[dict], bool]:
-    """Wandelt ein Personen-Prädikat in ein Bild-Prädikat um.
-
-    Das Ergebnis nimmt eine Dataset-Zeile (dict mit Schlüssel "persons", eine
-    Liste von Zeilen-dicts; mit row_to_person in Personen umwandeln) und ist
-    wahr, wenn mindestens eine Person pred erfüllt. Ohne Personen: falsch.
-    """
-    raise NotImplementedError
+    """Bild-Prädikat: mindestens eine Person erfüllt pred."""
+    return lambda row: any(pred(row_to_person(d)) for d in row["persons"])
 
 
-def all_of(*preds: Callable) -> Callable:
-    """Kombiniert beliebig viele Prädikate zu einem: wahr, wenn alle wahr sind.
-
-    Das Ergebnis nimmt dasselbe Argument wie die einzelnen Prädikate. Ohne
-    Argumente ist es immer wahr.
-    """
-    raise NotImplementedError
-
-
-# --- vorgegeben ---------------------------------------------------------------
 def max_persons(k: int) -> Callable[[dict], bool]:
     """Bild-Prädikat: höchstens k Personen."""
     return lambda row: len(row["persons"]) <= k
+
+
+def all_of(*preds: Callable) -> Callable:
+    """Wahr, wenn alle Prädikate wahr sind. Ohne Argumente immer wahr."""
+    return lambda x: all(pred(x) for pred in preds)
 
 
 def knee_angles(persons_px: tuple[Person, ...]) -> tuple[float, ...]:

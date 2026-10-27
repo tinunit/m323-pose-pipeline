@@ -1,4 +1,4 @@
-# Runde 2 – Schritt 6: Zustand als Wert (kein globaler Zustand).
+# Runde 2 – Schritt 4: State as a value (Zustand als Wert) (kein globaler Zustand).
 # Startet mit `uv run python -m bad.b6_reps`.
 # Beobachtet:
 #   - Was geben der 1. und der 2. Aufruf von count_reps_global mit derselben

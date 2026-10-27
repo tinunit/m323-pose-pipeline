@@ -1,4 +1,4 @@
-# Runde 2 – Schritt 4: Reiner Kern, unreine Schale und Memoisierung.
+# Runde 2 – Schritt 3: Functional core, imperative shell (reiner Kern, unreine Schale) und Memoization.
 # Startet mit `uv run python -m bad.b4_stale_cache`.
 # Beobachtet:
 #   - Was geben die beiden ersten Aufrufe von count_people aus, obwohl CONF dazwischen geändert wurde?

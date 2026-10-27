@@ -1,7 +1,7 @@
-"""Schritt 4: Inferenz mit YOLO.
+"""Schritt 3: Inferenz mit YOLO.
 
-Reiner Kern: result_to_persons (nur Zahlenlisten rein, Personen raus).
-Unreine Schale: get_model, predict_batch, predict_image (Modell, Dateien, CPU).
+Pure core (reiner Kern): result_to_persons, confident (nur Zahlen rein, Personen raus).
+Impure shell (unreine Schale): get_model, predict_batch, predict_image (Modell, Dateien, CPU).
 """
 
 import sys
@@ -26,13 +26,9 @@ KP_CONF = 0.5  # vorhergesagte Punkte darunter gelten als "nicht markiert"
 # --- Runde 1: eure Aufgabe ----------------------------------------------------
 @lru_cache(maxsize=None)
 def get_model(weights: str) -> YOLO:
-    """Unrein. Lädt das YOLO-Modell zu den Gewichten `weights`.
-
-    Das Laden dauert; das Modell soll pro Gewichtsdatei nur einmal geladen
-    werden. Der Decorator `lru_cache` darüber sorgt dafür, ihr schreibt nur
-    das Laden selbst.
-    """
-    raise NotImplementedError
+    """Impure. Lädt das YOLO-Modell. Dank lru_cache nur beim ersten Aufruf."""
+    # TODO: das Modell mit YOLO(weights) laden und zurückgeben (eine Zeile, wie in "Los geht's")
+    raise NotImplementedError("Schritt 3: get_model")
 
 
 def result_to_persons(
@@ -41,56 +37,51 @@ def result_to_persons(
     kps_xyn: list[list[list[float]]],
     kps_conf: Optional[list[list[float]]],
 ) -> tuple[Person, ...]:
-    """Rein. Zahlenlisten aus dem YOLO-Ergebnis in Personen umwandeln.
-
-    Alle Listen haben eine Zeile pro erkannter Person:
-    - boxes_xywhn: je [cx, cy, w, h] (normalisiert)
-    - boxes_conf: je ein Wert, wird zu `score` der Person
-    - kps_xyn: je 17 Paare [x, y]
-    - kps_conf: je 17 Konfidenzen (werden zu v) oder None
-
-    Ist kps_conf None, wird v = 1.0 für alle Punkte gesetzt. Keine Erkennung
-    (leere Listen) ergibt ().
-    """
-    raise NotImplementedError
-
-
-def predict_batch(batch: dict, weights: str, conf: float) -> dict:
-    """Unrein. Für Dataset.map(batched=True): Inferenz für einen Batch Bilder.
-
-    `batch["image"]` ist eine Liste von PIL-Bildern. Mit get_model(weights)
-    das Modell holen und model.predict(...) auf RGB-Bildern aufrufen (conf,
-    verbose=False, device="cpu"). Aus jedem Ergebnis die Personen lesen
-    (mit eurem `_persons_of`, siehe unten) und mit person_to_row in Zeilen-dicts
-    umwandeln. Rückgabe: {"pred": [...]} mit einer Liste von Personen-dicts
-    pro Bild, in derselben Reihenfolge wie der Batch.
-    """
-    raise NotImplementedError
-
-
-def confident(p: Person, kp_conf: float = KP_CONF) -> Person:
-    """Rein. Gibt eine neue Person zurück, bei der unsichere Punkte nicht zählen.
-
-    Punkte mit Konfidenz (v) kleiner als kp_conf bekommen v = 0.0 (x und y
-    bleiben), sichere Punkte bleiben unverändert. Box und score bleiben gleich.
-    Hintergrund: Bei Vorhersagen ist v die Konfidenz und praktisch nie genau 0,
-    ohne diesen Schritt gilt jeder geratene Punkt als markiert.
-    """
-    raise NotImplementedError
-
-
-def _persons_of(result) -> tuple[Person, ...]:
-    """Dünne Schale: ein YOLO-Ergebnis in Personen.
-
-    Liest die vier Felder aus dem Ergebnis (siehe Anleitung Kapitel 1):
-    result.boxes.xywhn, result.boxes.conf, result.keypoints.xyn,
-    result.keypoints.conf. Es sind Tensoren: mit .tolist() in Listen umwandeln.
-    result.keypoints.conf kann None sein. Dann result_to_persons aufrufen.
-    """
-    raise NotImplementedError
+    """Pure. Zahlenlisten aus dem YOLO-Ergebnis in Personen (keine YOLO-Objekte, darum ohne Modell testbar).
+    Keine Erkennung ergibt ()."""
+    if kps_conf is None:                                     # gegeben: ohne Konfidenz gilt v = 1.0
+        kps_conf = [[1.0] * len(xy) for xy in kps_xyn]
+    persons = []
+    for box, score, xy, conf in zip(boxes_xywhn, boxes_conf, kps_xyn, kps_conf):
+        # TODO: kps soll ein Tupel von 17 Keypoint(x, y, v) sein.
+        #   xy   = [[x0, y0], [x1, y1], ...]   (17 Paare, normalisiert)
+        #   conf = [v0, v1, ...]               (17 Konfidenzen)
+        #   Ergebnis z.B. (Keypoint(0.52, 0.38, 0.97), Keypoint(0.55, 0.35, 0.95), ...)
+        kps = ...
+        raise NotImplementedError("Schritt 3: kps ergänzen, dann diese Zeile löschen")
+        persons.append(Person(box=tuple(box), keypoints=kps, score=score))
+    return tuple(persons)
 
 
 # --- vorgegeben ---------------------------------------------------------------
+def confident(p: Person, kp_conf: float = KP_CONF) -> Person:
+    """Pure. Punkte mit Konfidenz < kp_conf bekommen v = 0.
+
+    Bei Vorhersagen ist v die Konfidenz und praktisch nie genau 0. Ohne diesen
+    Schritt gilt jeder geratene Punkt (z.B. ein Knie ausserhalb des Bildes) als
+    markiert, und knee_angle liefert einen Winkel statt None.
+    """
+    return p._replace(keypoints=tuple(
+        k if k.v >= kp_conf else Keypoint(k.x, k.y, 0.0) for k in p.keypoints
+    ))
+
+
+def _persons_of(result) -> tuple[Person, ...]:
+    """Dünne Schale: YOLO-Ergebnis -> Zahlenlisten -> Personen."""
+    kps = result.keypoints
+    return result_to_persons(
+        result.boxes.xywhn.tolist(),
+        result.boxes.conf.tolist(),
+        kps.xyn.tolist(),
+        kps.conf.tolist() if kps.conf is not None else None,
+    )
+
+
+def predict_batch(batch: dict, weights: str, conf: float) -> dict:
+    """Impure. Für Dataset.map(batched=True). Gibt {"pred": [...]} zurück."""
+    images = [im.convert("RGB") for im in batch["image"]]
+    results = get_model(weights).predict(images, conf=conf, verbose=False, device="cpu")
+    return {"pred": [[person_to_row(p) for p in _persons_of(r)] for r in results]}
 
 
 def predict_split(ds: Dataset, weights: str = WEIGHTS, conf: float = 0.25) -> Dataset:
@@ -106,7 +97,7 @@ def predict_split(ds: Dataset, weights: str = WEIGHTS, conf: float = 0.25) -> Da
 
 
 def predict_image(image: Image.Image, weights: str = WEIGHTS, conf: float = 0.25) -> tuple[Person, ...]:
-    """Unrein: ein einzelnes Bild (PIL; numpy-Arrays gehen über Image.fromarray)."""
+    """Impure. ein einzelnes Bild (PIL; numpy-Arrays gehen über Image.fromarray)."""
     result = get_model(weights).predict(
         [image.convert("RGB")], conf=conf, verbose=False, device="cpu"
     )[0]
@@ -135,7 +126,7 @@ def annotate(path: str, weights: str = WEIGHTS, conf: float = 0.25, out: str = "
 
 
 def demo_cache(conf: float = 0.25, pass_model: bool = False) -> None:
-    """Die Beobachtungen aus 7.2: map-Cache, conf ändern, Modellobjekt als Argument.
+    """Die Beobachtungen aus Abschnitt 3.3: map-Cache, conf ändern, Modellobjekt als Argument.
 
     Aufruf: python -m pipeline.inference --demo-cache [conf] [--model-object]
     """

@@ -29,7 +29,7 @@ FEATURES = Features({
 
 # --- Runde 1: eure Aufgabe ----------------------------------------------------
 def parse_label_line(line: str) -> Optional[Person]:
-    """Rein. Eine Zeile im YOLO-Pose-Format in eine Person umwandeln.
+    """Pure. Eine Zeile im YOLO-Pose-Format in eine Person umwandeln.
 
     Eine gültige Zeile hat N_VALUES (56) Zahlen, durch Leerzeichen getrennt:
     Klasse, Box (cx cy w h), dann 17 mal (x y v). Die Klasse wird nicht
@@ -60,7 +60,7 @@ def parse_label_line(line: str) -> Optional[Person]:
 
 # --- vorgegeben ---------------------------------------------------------------
 def parse_label_file(text: str) -> tuple[Person, ...]:
-    """Rein. Alle gültigen Zeilen einer Label-Datei als Tupel von Personen.
+    """Pure. Alle gültigen Zeilen einer Label-Datei als Tupel von Personen.
 
     Ruft eure parse_label_line für jede Zeile auf und lässt None weg.
     """
@@ -89,7 +89,7 @@ def labelled_count(p: Person) -> int:
 
 
 def _example(img_path: Path, label_dir: Path) -> dict:
-    """Unrein: liest Bild und Label von der Festplatte."""
+    """Impure. liest Bild und Label von der Festplatte."""
     label_path = label_dir / (img_path.stem + ".txt")
     text = label_path.read_text() if label_path.exists() else ""
     with PILImage.open(img_path) as im:

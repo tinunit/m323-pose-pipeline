@@ -1,4 +1,4 @@
-"""Schritt 2: Geometrie mit reinen Funktionen."""
+"""Schritt 2: Geometrie mit pure functions (reinen Funktionen)."""
 
 import math
 from typing import Optional
@@ -12,36 +12,41 @@ KNEE_JOINTS = {"left": (11, 13, 15), "right": (12, 14, 16)}
 
 # --- Runde 1: eure Aufgabe ----------------------------------------------------
 def to_pixels(p: Person, width: int, height: int) -> Person:
-    """Rein. Neue Person in Pixelkoordinaten, die Eingabe bleibt unverändert.
+    """Pure. Neue Person mit Pixel-Koordinaten. Die Eingabe p bleibt unverändert.
+    Beispiel: Bild 416 x 640, Nase (0.5, 0.25) -> (208.0, 160.0)"""
+    cx, cy, w, h = p.box
+    box = (cx * width, cy * height, w * width, h * height)
+    # TODO: alle 17 Keypoints umrechnen: x * width, y * height, v bleibt gleich.
+    #       kps soll ein Tupel von 17 Keypoint sein.
+    kps = ...
+    raise NotImplementedError("Schritt 2: kps ergänzen, dann diese Zeile löschen")
 
-    x-Werte (auch die Box-Mitte cx und die Box-Breite w) werden mit width
-    multipliziert, y-Werte (cy, h) mit height. v und score bleiben gleich.
-    """
-    raise NotImplementedError
-
-
-def angle_at(a: Keypoint, b: Keypoint, c: Keypoint) -> Optional[float]:
-    """Rein. Winkel in Grad bei b zwischen den Strecken b->a und b->c.
-
-    Ergebnis zwischen 0 und 180. Ist eine der beiden Strecken die Länge 0
-    (Punkte fallen zusammen), gibt es keinen Winkel: None. Achtung: wegen
-    Rundungsfehlern kann der Wert, den ihr an acos übergebt, minimal ausserhalb
-    von [-1, 1] liegen.
-    """
-    raise NotImplementedError
+    return Person(box=box, keypoints=kps, score=p.score)
 
 
 def knee_angle(p_px: Person, side: str) -> Optional[float]:
-    """Rein. Kniewinkel einer Seite ("left" oder "right") in Grad.
-
-    Die Person muss in Pixeln vorliegen. Die drei Punkte Hüfte, Knie, Fussgelenk
-    stehen in KNEE_JOINTS. Ist einer davon nicht markiert (v <= 0), oder gibt
-    angle_at None zurück: None.
-    """
-    raise NotImplementedError
+    """Pure. Kniewinkel in Grad, oder None.
+    side ist "left" (Punkte 11, 13, 15) oder "right" (12, 14, 16)."""
+    hip, knee, ankle = (p_px.keypoints[i] for i in KNEE_JOINTS[side])
+    # TODO: None zurückgeben, wenn einer der drei Punkte nicht markiert ist (v <= 0)
+    # TODO: sonst angle_at(hip, knee, ankle) zurückgeben
+    raise NotImplementedError("Schritt 2: knee_angle")
 
 
 # --- vorgegeben ---------------------------------------------------------------
+def angle_at(a: Keypoint, b: Keypoint, c: Keypoint) -> Optional[float]:
+    """Pure. Winkel in Grad bei b zwischen den Strecken b->a und b->c (0 bis 180).
+    Ist eine der beiden Strecken die Länge 0, gibt es keinen Winkel: None."""
+    ux, uy = a.x - b.x, a.y - b.y
+    wx, wy = c.x - b.x, c.y - b.y
+    lu, lw = math.hypot(ux, uy), math.hypot(wx, wy)
+    if lu == 0 or lw == 0:
+        return None
+    cos = (ux * wx + uy * wy) / (lu * lw)
+    cos = max(-1.0, min(1.0, cos))  # Rundungsfehler abfangen
+    return math.degrees(math.acos(cos))
+
+
 if __name__ == "__main__":
     from pipeline.data import load_or_build, row_to_person
     from pipeline.draw import draw_skeleton

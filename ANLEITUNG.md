@@ -1,6 +1,6 @@
 # Modul 323: Pose-Pipeline
 
-Ihr baut eine Pipeline, die auf Bildern Personen erkennt, Gelenkpunkte bestimmt, das Ergebnis mit Labels vergleicht und im Video Bewegungen auswertet. Alles funktional in Python. Zuerst **implementiert** ihr (Runde 1), danach **erkennt ihr die FP-Prinzipien** in eurem eigenen Code (Runde 2).
+Funktionale Programmierung (FP) ist nicht an Haskell gebunden: Ihre Prinzipien wie unveränderliche Daten, pure functions und Funktionen als Werte stecken in fast allen modernen Sprachen und Frameworks. In diesem Projekt lernt ihr sie an einem konkreten Beispiel kennen: einer kleinen Computer-Vision-Pipeline in Python, die Personen und ihre Gelenke auf Bildern und in Videos erkennt. In **Runde 1** baut ihr die Pipeline, in **Runde 2** findet ihr die FP-Prinzipien in eurem eigenen Code und in der Software, die ihr in eurem Lehrbetrieb entwickelt.
 
 ## Los geht's: YOLO in 5 Zeilen
 
@@ -67,19 +67,21 @@ Nase der ersten Person (x, y): [239, 129]
 0. [Worum es geht](#0-worum-es-geht)
 1. [YOLO und Pose](#1-yolo-und-pose)
 2. [Runde 1: Implementieren](#2-runde-1-implementieren)
-   - [Schritt 1: Daten laden](#schritt-1-daten-laden) · [2: Geometrie](#schritt-2-geometrie) · [3: Filtern](#schritt-3-filtern) · [4: YOLO](#schritt-4-yolo-inferenz) · [5: Auswerten](#schritt-5-auswerten) · [6: Video](#schritt-6-video) · [7: Bonus](#schritt-7-bonus-spiegeln)
+   - [Schritt 1: Daten laden](#schritt-1-daten-laden) · [2: Geometrie](#schritt-2-geometrie) · [3: YOLO](#schritt-3-yolo) · [4: Video](#schritt-4-video) (4a Kniebeugen, 4b eigene Analyse)
 3. [Runde 2: FP-Prinzipien](#3-runde-2-fp-prinzipien)
-   - [3.0 FP ist überall](#30-fp-ist-überall) · [3.1](#31-schritt-1-unveränderlichkeit-und-aliasing) · [3.2](#32-schritt-2-reine-funktionen) · [3.3](#33-schritt-3-funktionen-als-werte-und-closures) · [3.4](#34-schritt-4-reiner-kern-unreine-schale-memoisierung) · [3.5](#35-schritt-5-fold-und-monoid) · [3.6](#36-schritt-6-zustand-als-wert) · [3.7 Bonus](#37-bonus-schritt-7)
-4. [Journal und Abgabe](#4-journal-und-abgabe)
+   - [3.0 FP ist überall](#30-fp-ist-überall) · [3.1 Immutability und Aliasing](#31-immutability-und-aliasing) · [3.2 Pure functions](#32-pure-functions) · [3.3 Functional core, imperative shell, Memoization](#33-functional-core-imperative-shell-und-memoization) · [3.4 State as a value und Fold](#34-state-as-a-value-und-fold)
+4. [Bericht und Abgabe](#4-bericht-und-abgabe)
 5. [Spickzettel](#5-spickzettel)
 
 ---
 
 ## 0. Worum es geht
 
-**Die Pipeline in einem Satz:** Bild rein, Personen mit 17 Gelenkpunkten raus, mit den Labels vergleichen, daraus Winkel berechnen und Bewegungen zählen.
+**Die Pipeline in einem Satz:** Bild rein, Personen mit 17 Gelenkpunkten raus, daraus Winkel berechnen und Bewegungen zählen.
 
-![Überblick über die Pipeline mit den Schritten 1 bis 7](docs/img/pipeline_ueberblick.svg)
+![Überblick über die Pipeline](docs/img/pipeline_ueberblick.svg)
+
+Im Bild seht ihr sieben Stationen. Ihr programmiert vier davon (Schritte 1, 2, 4 und 6 im Bild, bei uns **Schritt 1 bis 4**). Die Stationen Filtern (3), Auswerten (5) und Spiegeln (7) im Bild sind bereits **fertig vorgegeben**.
 
 ### Der Datensatz: COCO
 
@@ -123,7 +125,7 @@ Ein vorhergesagter Punkt zählt als **richtig**, wenn er näher beim Label-Punkt
 
 ![PCK: richtig, wenn der vorhergesagte Punkt im Toleranzkreis liegt](docs/img/pck_toleranz.svg)
 
-Das ist nur zum Verstehen: Ihr müsst das nicht auswendig können. Gerechnet wird es in Schritt 5.
+Das ist nur zum Verstehen, ihr müsst nichts davon rechnen oder auswendig können.
 
 ### Daten und Modell
 
@@ -138,26 +140,23 @@ Beide liefern pro Person dasselbe: eine Box und 17 Punkte. Darum können wir Lab
 
 ### Die zwei Runden
 
-| | Runde 1: Implementieren | Runde 2: FP-Prinzipien |
-|---|---|---|
-| Was | Pro Schritt schreibt ihr nur die **Kernstücke**, der Rest liegt fertig im Repo | Prinzip benennen, in eurem Code finden, mit einem fertigen `bad/`-Skript **kaputt machen**, beobachten, erklären |
-| KI | erlaubt und erwünscht | erlaubt, aber die Erklärung muss von euch kommen |
+In Runde 1 schreibt ihr nur die **Kernstücke**, der Rest liegt fertig im Repo. In Runde 2 macht ihr vier Prinzipien mit fertigen `bad/`-Skripten **kaputt** und erklärt, was ihr seht.
 
 ### Zeitplan (Richtwert, zusammen ca. 4 Stunden)
 
 | Teil | Zeit |
 |---|---|
-| Setup + Kapitel 1 (YOLO ausprobieren, Daten verstehen) | 30 min |
-| Runde 1, Schritte 1 bis 6a | 2 h |
+| Setup + "Los geht's" + Kapitel 1 (YOLO ausprobieren, Daten verstehen) | 30 min |
+| Runde 1: Schritte 1 bis 4a | 1 h 15 |
 | Runde 2: Einstieg + Recherche im Betrieb | 30 min |
-| Runde 2: FP-Prinzipien an den Schritten 1 bis 6 | 60 min |
-| Journal fertig machen | 10 min |
-| **Zum Schluss:** Schritt 6b, eure eigene Analyse | so weit ihr kommt |
-| Schritt 7 | Bonus |
+| Runde 2: FP-Prinzipien (4 Abschnitte) | 45 min |
+| Bericht fertig machen | 15 min |
+| Puffer | 25 min |
+| **Zum Schluss:** Schritt 4b, eure eigene Analyse | so weit ihr kommt |
 
 ### Teams
 
-Ihr arbeitet **zu zweit**. Teilt euch die Funktionen auf, aber lest den Code des anderen: Ihr müsst am Schluss beide alles erklären können.
+Ihr arbeitet in Teams von **2 bis 4 Personen**. Teilt die 4 Schritte unter euch auf, aber alle müssen jeden Schritt erklären können. Die Recherche im Betrieb (Kapitel 3.0) macht **jede Person** aus Sicht des eigenen Lehrbetriebs.
 
 ### Voraussetzungen
 
@@ -171,9 +170,9 @@ Ihr arbeitet **zu zweit**. Teilt euch die Funktionen auf, aber lest den Code des
 1. **Eine Person** des Teams öffnet dieses Repo auf GitHub und klickt **"Use this template" → "Create a new repository"**.
 2. Name z.B. `m323-pose-<eure-namen>`, Sichtbarkeit **Private**, dann **Create repository**.
 3. Im neuen Repo: **Settings → Collaborators → Add people**:
-   - die **Teampartnerin / den Teampartner**,
+   - **alle anderen Teammitglieder**,
    - die **Lehrperson** (GitHub: `tinunit`).
-4. Beide klonen das neue Repo und richten es ein:
+4. Alle klonen das neue Repo und richten es ein:
 
    ```bash
    git clone git@github.com:<euer-konto>/<euer-repo>.git
@@ -183,7 +182,7 @@ Ihr arbeitet **zu zweit**. Teilt euch die Funktionen auf, aber lest den Code des
 
 **Nicht forken:** Ein Fork eines öffentlichen Repos ist selbst öffentlich, dann sieht die ganze Klasse euren Code. Mit "Use this template" bekommt ihr ein eigenes, privates Repo.
 
-**Zu zweit arbeiten:** Vor dem Arbeiten `git pull`, danach `git add`, `git commit`, `git push`. Am einfachsten teilt ihr die Funktionen eines Schritts auf und arbeitet in verschiedenen Dateien. Ein Commit pro Schritt, z.B. `git commit -m "Schritt 2: Geometrie"`.
+**Zusammenarbeiten:** Vor dem Arbeiten `git pull`, danach `git add`, `git commit`, `git push`. Arbeitet in verschiedenen Dateien, so gibt es keine Konflikte. Ein Commit pro Schritt, z.B. `git commit -m "Schritt 2: Geometrie"`.
 
 ### Setup prüfen
 
@@ -196,10 +195,10 @@ Am Anfang sind nur die Tests **eurer** Funktionen rot. Euer Ziel pro Schritt: di
 
 ### Arbeiten mit KI
 
-- KI-Assistenten sind **erlaubt**. Lasst euch Funktionen erklären, Fehlermeldungen deuten, Tests erläutern.
-- **Verstehen, was ihr übernehmt.** Kopierter Code, den ihr nicht erklären könnt, gibt in Runde 2 Probleme.
+- KI-Assistenten sind **erlaubt und erwünscht**: Funktionen erklären lassen, Fehlermeldungen deuten, Tests erläutern.
+- **Verstehen, was ihr übernehmt.** Die Erklärungen im Bericht müssen von euch kommen.
 - Gebt der KI die Docstrings und den Test mit: Sie liefert dann viel bessere Vorschläge.
-- Im Journal notiert ihr pro Schritt: **Wo hat die KI geholfen? Wo lag sie falsch?**
+- Im Bericht (Teil C) beschreibt ihr: **Wo hat die KI geholfen? Wo lag sie falsch?**
 
 ---
 
@@ -333,13 +332,13 @@ class Person(NamedTuple):
 
 ## 2. Runde 1: Implementieren
 
-Pro Schritt: Ziel, was schon gegeben ist, **eure Aufgabe** (die Funktionen mit `raise NotImplementedError` in der Datei), ein Hinweis in Richtung Lösung und wie ihr prüft. Die Docstrings in den Dateien beschreiben genau, was jede Funktion tun soll.
+Runde 1 hat **vier Schritte**. Pro Schritt: Ziel, Gegeben, **eure Aufgabe**, Hinweis, Prüfen. Die Docstrings beschreiben genau, was jede Funktion tun soll. Ihr schreibt nur die `# TODO`-Stellen. Alles andere in `pipeline/` ist fertig.
 
-Allgemeine Regeln: **Funktionen verändern ihre Argumente nicht**, sie geben neue Werte zurück. Verwendet die Typen `Keypoint` und `Person`.
+Allgemeine Regeln: **Funktionen verändern ihre Argumente nicht**, sie geben neue Werte zurück. Verwendet die Typen `Keypoint` und `Person`. In den Docstrings steht **Pure.** (pure function, reine Funktion: nur Eingabe, nur Ausgabe) oder **Impure.** (hat Nebenwirkungen, *side effects*: Dateien, Modell, Video).
 
 ### Schritt 1: Daten laden
 
-**Ziel:** Label-Dateien einlesen und in `Person`-Objekte umwandeln.
+**Ziel:** Label-Dateien einlesen und in `Person`-Objekte umwandeln. **FP-Thema:** Immutability (Unveränderlichkeit): `Person` und `Keypoint` sind `NamedTuple`s und lassen sich nach dem Bauen nicht mehr ändern.
 
 **Gegeben** (`pipeline/data.py`): `parse_label_file` (ruft eure Funktion für jede Zeile auf), `FEATURES`, `person_to_row`, `row_to_person`, `labelled_count`, `load_split`, `load_all`, `load_or_build`, `summary`. Sie bauen aus euren Personen ein Hugging-Face-`Dataset` und speichern es auf der Festplatte.
 
@@ -349,9 +348,9 @@ Allgemeine Regeln: **Funktionen verändern ihre Argumente nicht**, sie geben neu
 |---|---|---|---|
 | `parse_label_line(line)` | **eine Zeile** als `str`, z.B. `"0 0.193 0.405 … 0.151 0.911 1"` | **eine** `Person`, oder `None` | 56 Zahlen → Box + 17 `Keypoint` |
 
-Der Anfang ist schon da: Zeile aufteilen, Anzahl prüfen, in Zahlen umwandeln (`nums`, ein Tupel mit 56 Zahlen), und am Schluss `return Person(box=box, keypoints=kps)`. **Ihr ergänzt nur `box` und `kps`.**
+Der Anfang ist schon da: Zeile aufteilen, Anzahl prüfen, in Zahlen umwandeln (`nums`, ein Tupel mit 56 Zahlen), und am Schluss `return Person(box=box, keypoints=kps)`. **Ihr ergänzt nur `box` und `kps`** und löscht die Zeile `raise NotImplementedError(...)`.
 
-Das Lesen der Datei von der Festplatte (`Path.read_text()`) und das Bauen des Datasets erledigt das gegebene `load_split`. Eure Funktionen bekommen nur **Text** und geben **Werte** zurück.
+Das Lesen der Datei von der Festplatte (`Path.read_text()`) und das Bauen des Datasets erledigt das gegebene `load_split`. Eure Funktion bekommt nur **Text** und gibt **Werte** zurück.
 
 **Hinweis:**
 
@@ -375,29 +374,31 @@ Ihr solltet für COCO8 pro Split 4 Bilder sehen. Erwartung: alle Tests in `test_
 
 ### Schritt 2: Geometrie
 
-**Ziel:** Normalisierte Koordinaten in Pixel umrechnen und den Kniewinkel berechnen.
+**Ziel:** Normalisierte Koordinaten in Pixel umrechnen und den Kniewinkel bestimmen. **FP-Thema:** pure functions (reine Funktionen): `to_pixels` gibt eine **neue** `Person` zurück und verändert die Eingabe nicht.
 
-**Gegeben:** `KNEE_JOINTS` (Indizes von Hüfte, Knie, Fussgelenk pro Seite) und `pipeline/draw.py` komplett (`draw_skeleton` zeichnet ein Skelett auf ein Bild).
+**Gegeben** (`pipeline/geometry.py`): `KNEE_JOINTS` (Indizes von Hüfte, Knie, Fussgelenk pro Seite) und **`angle_at(a, b, c)`**: der Winkel in Grad bei `b` zwischen den Strecken `b→a` und `b→c` (0 bis 180), oder `None`, wenn eine Strecke Länge 0 hat. Dazu `pipeline/draw.py` komplett (`draw_skeleton` zeichnet ein Skelett auf ein Bild).
 
 **Eure Aufgabe** (`pipeline/geometry.py`):
 
 | Funktion | Eingabe | Ausgabe | Was passiert |
 |---|---|---|---|
-| `to_pixels(p, width, height)` | **eine** `Person` (normalisiert, 0..1) + Bildbreite und -höhe in Pixeln (`int`) | **eine neue** `Person` in Pixeln | `x * width`, `y * height` für alle 17 Punkte und die Box (`cx, w` mit Breite, `cy, h` mit Höhe). `v` und `score` bleiben |
-| `angle_at(a, b, c)` | **drei** `Keypoint` (in Pixeln) | Winkel in Grad (`float`, 0 bis 180), oder `None` | Winkel **bei `b`** zwischen den Strecken `b→a` und `b→c`. `None`, wenn eine Strecke Länge 0 hat |
-| `knee_angle(p_px, side)` | **eine** `Person` in Pixeln + `"left"` oder `"right"` | Kniewinkel in Grad (`float`), oder `None` | Hüfte, Knie, Fussgelenk der Seite aus `KNEE_JOINTS` holen, `angle_at` aufrufen. `None`, wenn einer der drei Punkte nicht markiert ist (`v <= 0`) |
+| `to_pixels(p, width, height)` | **eine** `Person` (normalisiert, 0..1) + Bildbreite und -höhe in Pixeln (`int`) | **eine neue** `Person` in Pixeln | `x * width`, `y * height` für alle 17 Punkte (Box ist schon umgerechnet). `v` und `score` bleiben |
+| `knee_angle(p_px, side)` | **eine** `Person` in Pixeln + `"left"` oder `"right"` | Kniewinkel in Grad (`float`), oder `None` | `None`, wenn einer der drei Punkte (Hüfte, Knie, Fussgelenk) nicht markiert ist (`v <= 0`), sonst `angle_at` aufrufen |
 
 Gestreckt ≈ 180°, tiefe Kniebeuge ≈ 70–90°.
 
-**Hinweis:** Winkel zwischen zwei Vektoren über das Skalarprodukt.
+In `to_pixels` ist die Box schon umgerechnet (`box = ...`). Ihr ergänzt `kps` und löscht die Zeile `raise NotImplementedError(...)`. In `knee_angle` stehen die drei Punkte schon bereit (`hip, knee, ankle`).
+
+**Hinweis:**
 
 ```python
-# cos(winkel) = (u · w) / (|u| · |w|)   mit u = a - b,  w = c - b
-math.degrees(math.acos(cos))
-# angle_at(Keypoint(1, 0, 2), Keypoint(0, 0, 2), Keypoint(0, 1, 2)) == 90.0
+# Ein Keypoint ist ein NamedTuple: k.x, k.y, k.v. Einen neuen Keypoint baut man mit Keypoint(x, y, v).
+# Ein Tupel aus einer Schleife: tuple(f(k) for k in p.keypoints)
+# knee_angle: früh aussteigen mit  if <Bedingung>: return None
+# hip.v, knee.v, ankle.v sind die Sichtbarkeiten der drei Punkte
 ```
 
-Rechnet **in Pixeln**, nicht in normalisierten Koordinaten (siehe [Koordinaten](#koordinaten-normalisiert-und-pixel) in Kapitel 1: 146.8° statt 130.7°). Tipp: `cos` vor `acos` auf [-1, 1] begrenzen (Rundungsfehler).
+Gerechnet wird **in Pixeln**, nicht in normalisierten Koordinaten (siehe [Koordinaten](#koordinaten-normalisiert-und-pixel) in Kapitel 1: 146.8° statt 130.7°). Darum gibt es `to_pixels` vor `knee_angle`.
 
 **Prüfen:**
 
@@ -408,88 +409,36 @@ uv run python -m pipeline.geometry     # speichert ein Beispielbild mit Skelett 
 
 Öffnet das Bild in `out/` und prüft, ob das Skelett auf der Person sitzt.
 
-### Schritt 3: Filtern
+### Schritt 3: YOLO
 
-**Ziel:** Bilder und Personen nach Kriterien auswählen, mit kleinen Funktionen, die man kombinieren kann.
+**Ziel:** Das Modell laden und seine Ausgabe in unsere `Person`-Typen übersetzen. Teil C: eigenes Foto. **FP-Thema:** functional core, imperative shell (reiner Kern, unreine Schale) und memoization (Zwischenspeichern von Ergebnissen).
 
-**Gegeben** (`pipeline/filters.py`): `labelled` (Anzahl markierter Keypoints), `max_persons`, `knee_angles`, `angle_or`.
-
-**Eure Aufgabe:**
-
-| Funktion | Eingabe | Ausgabe | Was passiert |
-|---|---|---|---|
-| `min_labelled(n)` | eine Zahl `n` (`int`) | eine **Funktion** `Person -> bool` | die Funktion ist wahr, wenn die Person mindestens `n` markierte Keypoints hat |
-| `any_person(pred)` | eine **Funktion** `Person -> bool` | eine **Funktion** `Zeile -> bool` (Zeile = ein Bild im Dataset, ein `dict`) | wahr, wenn **mindestens eine** Person im Bild `pred` erfüllt |
-| `all_of(*preds)` | beliebig viele **Funktionen** `X -> bool` | eine **Funktion** `X -> bool` | wahr, wenn **alle** `preds` wahr sind. Ohne Argumente immer wahr |
-
-Eine Dataset-Zeile sieht so aus: `{"file_name": "...", "image": <Bild>, "width": 416, "height": 640, "persons": [ {"box": [...], "keypoints": [[x, y, v], ...], "score": 1.0}, ... ]}`.
-
-Die Funktionen geben also wieder Funktionen zurück.
-
-**Hinweis:**
-
-```python
-at_least_8 = min_labelled(8)                 # eine Funktion
-at_least_8(person)                           # True / False
-
-keep = all_of(any_person(min_labelled(12)), max_persons(1))
-filtered = ds["train"].filter(keep)          # Dataset.filter nimmt ein Prädikat auf Zeilen
-```
-
-Die Bild-Prädikate bekommen eine Dataset-Zeile (ein `dict`), die Personen darin sind `dict`s: wandelt sie mit `row_to_person` um.
-
-**Prüfen:**
-
-```bash
-uv run pytest tests/test_filters.py -q
-```
-
-Zusätzlich: `ds["train"].filter(all_of(any_person(min_labelled(12)), max_persons(1)))` solltet ihr auf `ds = load_or_build()` ausprobieren. Probiert verschiedene Werte; ein Filter, der nichts verwirft, sagt wenig.
-
-### Schritt 4: YOLO-Inferenz
-
-**Ziel:** Das Modell auf allen Bildern eines Datasets laufen lassen und die Ergebnisse in unsere `Person`-Typen übersetzen. Teil C: eigenes Foto.
-
-**Gegeben** (`pipeline/inference.py`): `FEATURES_WITH_PRED`, `WEIGHTS`, `KP_CONF`, `predict_split`, `predict_image`, `annotate` und die Kommandozeile. Dazu `run_own.py` und `visualize.py` komplett.
-
-**Eure Aufgabe:**
-
-| Funktion | Eingabe | Ausgabe | Was passiert |
-|---|---|---|---|
-| `get_model(weights)` | Dateiname der Gewichte (`str`), z.B. `"yolo11n-pose.pt"` | das **Modell** (`YOLO`) | `YOLO(weights)`. Mit `@lru_cache`, damit es nur **einmal** geladen wird |
-| `result_to_persons(boxes_xywhn, boxes_conf, kps_xyn, kps_conf)` | **vier Listen** für die `n` erkannten Personen: `n × 4` Box-Zahlen, `n` Konfidenzen, `n × 17 × 2` Punkt-Koordinaten, `n × 17` Punkt-Konfidenzen (oder `None`) | **Tupel von Personen**, Länge `n`; keine Erkennung → `()` | **rein**: pro Person Box, 17 `Keypoint(x, y, konfidenz)` und `score`. Ist `kps_conf` `None`, wird `v = 1.0` |
-| `_persons_of(result)` | **ein** YOLO-Ergebnis `r` (für ein Bild) | **Tupel von Personen** | die vier Felder aus Kapitel 1 mit `.tolist()` in Listen umwandeln, dann `result_to_persons` |
-| `predict_batch(batch, weights, conf)` | ein **Batch** aus dem Dataset: `dict` mit Listen, z.B. `batch["image"]` = Liste von 4 Bildern | `{"pred": [...]}`: pro Bild eine Liste von Personen-`dict`s | Bilder zu RGB, `model.predict(...)` auf alle Bilder, pro Ergebnis `_persons_of`, jede Person mit `person_to_row` zum `dict` |
-| `confident(p, kp_conf=0.5)` | **eine** vorhergesagte `Person` + Schwelle | **eine neue** `Person` | **rein**: Punkte mit Konfidenz `< kp_conf` bekommen `v = 0` (gelten als nicht markiert), alles andere bleibt |
+**Gegeben** (`pipeline/inference.py`): `FEATURES_WITH_PRED`, `WEIGHTS`, `KP_CONF`, `_persons_of` (liest die vier Felder aus dem YOLO-Ergebnis und ruft `result_to_persons` auf), `predict_batch`, `predict_split`, `predict_image`, `confident` (Punkte mit Konfidenz `< 0.5` bekommen `v = 0`, damit `knee_angle` nicht für **geratene** Knie einen Winkel liefert) und `annotate` mit der Kommandozeile. Dazu `run_own.py` und `visualize.py` komplett.
 
 So hängen die Funktionen zusammen:
 
 ![Datenfluss in predict_batch: vom Bild zur neuen Spalte pred](docs/img/yolo_datenfluss.svg)
 
-**Hinweis:** Die API aus Kapitel 1, in Teilen:
+**Eure Aufgabe** (`pipeline/inference.py`):
+
+| Funktion | Eingabe | Ausgabe | Was passiert |
+|---|---|---|---|
+| `get_model(weights)` | Dateiname der Gewichte (`str`), z.B. `"yolo11n-pose.pt"` | das **Modell** (`YOLO`) | das Modell laden. Der Decorator `@lru_cache` darüber sorgt dafür, dass es nur **einmal** geladen wird |
+| `result_to_persons(boxes_xywhn, boxes_conf, kps_xyn, kps_conf)` | **vier Listen** für die `n` erkannten Personen: `n × 4` Box-Zahlen, `n` Konfidenzen, `n × 17 × 2` Punkt-Koordinaten, `n × 17` Punkt-Konfidenzen (oder `None`) | **Tupel von Personen**, Länge `n`; keine Erkennung → `()` | pro Person Box, 17 `Keypoint(x, y, konfidenz)` und `score`. Die Schleife und der Fall `kps_conf is None` (dann `v = 1.0`) sind schon da, ihr ergänzt `kps` |
+
+`result_to_persons` ist **pure**: Es bekommt nur Zahlenlisten und kennt keine YOLO-Objekte. Darum lässt es sich ohne Modell testen. Das ist der *Kern*. `get_model`, `predict_batch` und `predict_image` sind die *Schale*: Sie laden das Modell und berühren Bilder.
+
+**Hinweis:** Die API aus Kapitel 1:
 
 ```python
-@lru_cache(maxsize=None)
-def get_model(weights: str) -> YOLO:
-    ...                                     # eine Zeile: YOLO(weights)
+model = YOLO("yolo11n-pose.pt")        # wie in "Los geht's": eine Zeile
 
-# in predict_batch:
-images = [im.convert("RGB") for im in batch["image"]]      # Graustufenbilder gibt es auch!
-results = get_model(weights).predict(images, conf=conf, verbose=False, device="cpu")
-# pro Ergebnis r -> _persons_of(r) -> person_to_row(p) für jede Person
-
-# in _persons_of:
-r.boxes.xywhn.tolist()     # [[cx, cy, w, h], ...]  eine Liste pro Person
-r.keypoints.conf           # kann None sein, sonst ebenfalls .tolist()
+# zip läuft über mehrere Listen gleichzeitig; Paare lassen sich direkt auspacken:
+for (x, y), v in zip([[0.5, 0.2], [0.6, 0.3]], [0.9, 0.8]):
+    print(x, y, v)                     # 0.5 0.2 0.9  /  0.6 0.3 0.8
 ```
 
 Probiert es zuerst interaktiv aus (`uv run python`), mit einem Bild aus `data/coco8-pose/images/val/`, und schaut euch die vier Felder an. So seht ihr, wie wenig Code das Modell braucht.
-
-`confident` wegen Unterschied 1 aus Kapitel 1: Bei Vorhersagen ist `v` die Konfidenz. Ohne `confident` würde `knee_angle` auch für **geratene** Knie einen Winkel liefern.
-
-```python
-confident(person, 0.5)    # Punkte mit v < 0.5 bekommen v = 0, alles andere bleibt
-```
 
 **Prüfen (Teil A und B):**
 
@@ -508,66 +457,29 @@ Der zweite Befehl schreibt `out/annotated.png` und druckt die Kniewinkel. Beim e
    ```
 3. Ergebnisse (Skelett und Kniewinkel) liegen in `out/eigene/`.
 
-Fragen für euch (fürs Journal): Funktioniert die Erkennung gut? Wie ändert sich der Winkel, wenn das Knie verdeckt ist? Eigene Fotos kommen **nicht** ins Repo.
+Fragen für euch: Funktioniert die Erkennung gut? Wie ändert sich der Winkel, wenn das Knie verdeckt ist? Eigene Fotos kommen **nicht** ins Repo.
 
-### Schritt 5: Auswerten
+### Schritt 4: Video
 
-**Ziel:** Messen, wie gut die Vorhersagen sind: **PCK**, der Anteil der Punkte, die nahe genug am Label liegen.
+**Ziel:** Bewegungen in Videos auswerten. Zuerst an einem festen Beispiel, den **Kniebeugen** (4a). Ganz am Schluss, nach Runde 2, untersucht ihr eine Bewegung, die **euch** interessiert (4b). **FP-Thema:** state as a value (Zustand als Wert, ein *Reducer*) und fold (Falten einer Liste zu einem Wert).
 
-![PCK: richtig, wenn der vorhergesagte Punkt im Toleranzkreis liegt](docs/img/pck_toleranz.svg)
+#### 4a: Beispiel Kniebeugen zählen
 
-**Idee:** Ein vorhergesagter Punkt ist "richtig", wenn er höchstens `ALPHA × Personengrösse` vom Label-Punkt entfernt ist (Personengrösse = grössere Seite der Label-Box, in Pixeln). Gezählt werden nur **markierte** Label-Punkte.
-
-**Gegeben** (`pipeline/evaluate.py`): `Counts` (`correct`, `total`), `ZERO`, `ALPHA`, `_dist`, `match` (ordnet einer Label-Person die beste Vorhersage zu), `image_counts`. `run_pipeline.py` komplett.
-
-**Eure Aufgabe:**
-
-| Funktion | Eingabe | Ausgabe | Was passiert |
-|---|---|---|---|
-| `person_counts(gt_px, pred_px, alpha)` | **eine** Label-Person, **eine** dazu passende Vorhersage oder `None` (beide in Pixeln), `alpha` (`float`, z.B. 0.1) | **ein** `Counts(correct, total)` | für jeden **markierten** Label-Punkt: Abstand zum gleichen Punkt der Vorhersage ≤ `alpha × Personengrösse` → richtig. `total` = Anzahl markierter Label-Punkte. Ist `pred_px` `None`: `Counts(0, total)` |
-| `add_counts(a, b)` | **zwei** `Counts` | **ein** `Counts` | komponentenweise addieren |
-| `pck(c)` | **ein** `Counts` | Anteil (`float`, 0..1) oder `None` | `correct / total`, `None` wenn `total == 0` |
-
-Das Zuordnen "welche Vorhersage gehört zu welcher Label-Person" (`match`) und das Zusammenzählen über alle Personen eines Bildes (`image_counts`) sind gegeben.
-
-**Hinweis:** Kleines Handbeispiel zum Prüfen im Kopf: Box 100 × 80 px (Personengrösse 100), zwei markierte Punkte bei (10, 10) und (50, 50). Die Vorhersage liegt 2 px vom ersten und 500 px vom zweiten entfernt, `ALPHA = 0.1` ergibt eine Toleranz von 10 px:
-
-```python
-person_counts(gt, pred, 0.1) == Counts(1, 2)
-add_counts(Counts(1, 2), Counts(3, 4)) == Counts(4, 6)
-```
-
-**Prüfen:**
-
-```bash
-uv run pytest tests/test_evaluate.py -q
-uv run python run_pipeline.py
-```
-
-`run_pipeline.py` lädt, filtert, macht Inferenz auf `val` und gibt PCK pro Bild und gesamt aus. Erwartung: Gesamt-PCK etwa **0.78** (90 von 116 Punkten). Ein Bild hat deutlich weniger als die anderen.
-
-### Schritt 6: Video
-
-**Ziel:** Bewegungen in Videos auswerten. Zuerst an einem festen Beispiel, den **Kniebeugen** (6a). Ganz am Schluss, nach Runde 2, untersucht ihr eine Bewegung, die **euch** interessiert (6b).
-
-#### 6a: Beispiel Kniebeugen zählen
-
-Filmt euch gegenseitig: etwa 10 Kniebeugen, 10 bis 20 Sekunden. Tipps:
+Filmt euch gegenseitig: etwa 10 Kniebeugen, 10 bis 20 Sekunden. Legt die Videos in einen Ordner `videos/` im Projekt (Ordner anlegen, er steht in der `.gitignore`, die Videos kommen also nicht ins Repo). Tipps:
 
 - **Kopf UND Füsse** im Bild, 3 bis 4 m Abstand.
 - **Genau von der Seite** filmen.
 - Kamera ruhig (Stativ oder ablegen).
 - Nicht am Anfang oder Ende ins Bild hinein- oder hinauslaufen (oder das wegschneiden).
 
-**Gegeben** (`pipeline/reps.py`): `RepState`, `START`, die Schwellen (`DOWN_BELOW`, `UP_ABOVE`), `frames` (Generator, ein Bild nach dem anderen), `angles` (Kniewinkel pro Bild), `drop_missing`, `states`. `run_squats.py` komplett.
+**Gegeben** (`pipeline/reps.py`): `RepState`, `START`, die Schwellen (`DOWN_BELOW`, `UP_ABOVE`), `frames` (Generator, ein Bild nach dem anderen), `angles` (Kniewinkel pro Bild), `drop_missing`, `ema` (glättet die Winkel), `states`. Und die erste Regel von `step`. `run_squats.py` komplett.
 
 **Eure Aufgabe** (`pipeline/reps.py`):
 
 | Funktion | Eingabe | Ausgabe | Was passiert |
 |---|---|---|---|
-| `step(state, angle)` | **ein** `RepState` (z.B. `RepState("up", 3)`) + **ein** Winkel (`float`) | **ein neuer** `RepState` | ein Schritt des Zustandsautomaten (Regeln unten) |
+| `step(state, angle)` | **ein** `RepState` (z.B. `RepState("up", 3)`) + **ein** Winkel (`float`) | **ein neuer** `RepState` | ein Schritt des Zustandsautomaten. Ihr ergänzt die Rückkehr von `down` nach `up` (mit `count + 1`) und den Fall "nichts passiert" |
 | `count_reps(xs)` | **Liste von Winkeln**, ein Winkel pro Videobild, z.B. `[170, 90, 165, 85, 170]` | Anzahl Wiederholungen (`int`), hier `2` | `step` über die ganze Liste anwenden, beginnend bei `START`, am Schluss `.count` |
-| `ema(xs, alpha)` | **Liste von Winkeln** + `alpha` (`float`, 0..1) | **Liste** gleicher Länge, geglättet | `s_neu = alpha * x + (1 - alpha) * s_alt`, erster Wert bleibt. Leere Liste → `[]` |
 
 Die Winkel-Liste kommt aus dem gegebenen `angles` (pro Videobild ein Kniewinkel oder `None`), `None` entfernt das gegebene `drop_missing`.
 
@@ -578,31 +490,38 @@ Die Winkel-Liste kommt aus dem gegebenen `angles` (pro Videobild ein Kniewinkel 
 **Hinweis:**
 
 ```python
-step(RepState("up", 0), 90)        # RepState("down", 0)
+step(RepState("up", 0), 90)        # RepState("down", 0)   (gegeben)
 step(RepState("down", 0), 170)     # RepState("up", 1)
-step(RepState("up", 0), 130)       # RepState("up", 0)   (nichts passiert)
-# count_reps = ein Fold: reduce(step, xs, START).count
-# ema = accumulate(...)   (itertools); Startwert ist das erste Element
+step(RepState("up", 0), 130)       # RepState("up", 0)     (nichts passiert)
+# Ein Fold: reduce(f, [a, b, c], start) == f(f(f(start, a), b), c)
 ```
 
 **Prüfen:**
 
 ```bash
 uv run pytest tests/test_reps.py -q
-uv run python run_squats.py video.mp4 --plot
+uv run python run_squats.py videos/kniebeugen.mp4 --plot
 ```
 
-`run_squats.py` zählt Wiederholungen und speichert mit `--plot` den Winkelverlauf in `out/angles.png` (`--side right` für das rechte Bein). Schaut euch den Plot an: Passen die Schwellen 100° und 160° zu euren Kniebeugen? Passt sie sonst an.
+`run_squats.py` zählt Wiederholungen und speichert mit `--plot` den Winkelverlauf in `out/angles.png` (`--side right` für das rechte Bein). Schaut euch den Plot an: Passen die Schwellen 100° und 160° zu euren Kniebeugen?
 
 > **Typisches Problem (unser Testvideo):** Etwa 10 Kniebeugen, gezählt wurden nur **3** (links) bzw. **4** (rechts) mit 100°/160° und `ema` 0.5. Gründe: Die Füsse waren abgeschnitten, also waren die Fussgelenke unsicher und bei vielen Bildern fehlte der Winkel (612 von 1023). Beim Aufstehen erreichte das Knie nur 140 bis 155°, also nie die 160°. Mit `UP_ABOVE = 140` kamen **9** bzw. **8** heraus.
 >
-> **Lehre:** Schaut euch den Plot an (`--plot`, `out/angles.png`) und passt `DOWN_BELOW` und `UP_ABOVE` in `pipeline/reps.py` an eure Kurve an. Bei vielen Lücken weniger glätten (`alpha` 0.8 bis 1.0) oder nochmals filmen.
+> **Lehre:** Passt `DOWN_BELOW` und `UP_ABOVE` in `pipeline/reps.py` an eure Kurve an. Bei vielen Lücken weniger glätten (`alpha` 0.8 bis 1.0) oder nochmals filmen.
+>
+> **Werkzeug zum Prüfen:** Mit dem gegebenen `annotate_video.py` seht ihr, wo das Zählen schiefgeht:
+>
+> ```bash
+> uv run python annotate_video.py videos/kniebeugen.mp4 --up 140
+> ```
+>
+> Es schreibt `out/video/annotated.mp4`: Skelett, Kniewinkel und Zähler in jedem Bild. Spielt es z.B. mit VLC ab. Weitere Optionen: `--side left|right`, `--down`, `--up`, `--out`.
 
 **Dauer:** Rechnet mit etwa 10 Bildern pro Sekunde auf einem Laptop (nur CPU). Ein Video von 30 s mit 30 Bildern/s (900 Bilder) braucht etwa 1.5 Minuten.
 
-#### 6b: Eure eigene Analyse
+#### 4b: Eure eigene Analyse
 
-**Das ist der letzte Teil: erst nach Runde 2, so weit ihr in der Zeit kommt.** Ihr wählt selbst, was ihr untersuchen wollt. Es gibt keine richtige Lösung: Wichtig ist, dass ihr eine Frage stellt, sie mit der Pipeline beantwortet und im Journal beschreibt, was funktioniert hat und was nicht.
+**Das ist der letzte Teil: erst nach Runde 2, so weit ihr in der Zeit kommt.** Ihr wählt selbst, was ihr untersuchen wollt. Es gibt keine richtige Lösung: Wichtig ist, dass ihr eine Frage stellt, sie mit der Pipeline beantwortet und im Bericht beschreibt (optionaler Abschnitt am Schluss), was funktioniert hat und was nicht.
 
 **Ideen:**
 
@@ -635,7 +554,7 @@ def elbow_angles(path, side_idx=(6, 8, 10)):          # lazy: ein Winkel pro Vid
         yield angle_at(a, b, c) if min(a.v, b.v, c.v) > 0 else None
 ```
 
-Danach wie in 6a: `drop_missing`, `ema`, eigene Schwellen und `count_reps`, oder einfach `max(...)`, Mittelwert, ein Plot.
+Danach wie in 4a: `drop_missing`, `ema`, eigene Schwellen und `count_reps`, oder einfach `max(...)`, Mittelwert, ein Plot.
 
 **Gut zu wissen bei echten Sportvideos:**
 
@@ -643,35 +562,22 @@ Danach wie in 6a: `drop_missing`, `ema`, eigene Schwellen und `count_reps`, oder
 - **Kleine Personen** (Spieler weit weg) werden schlechter erkannt, Punkte werden unsicher. Nahaufnahmen funktionieren besser.
 - **Kamera:** Eine bewegte Kamera ist für Winkel egal, für Positionen (Sprint, Weg) nicht.
 - **Rechenzeit:** Auf der CPU schafft das Modell einige Bilder pro Sekunde. Nehmt kurze Clips (10 bis 30 Sekunden) oder wertet nur jedes zweite oder dritte Bild aus.
-- **Videos:** Am besten eigene Aufnahmen. Fremde Videos nur, wenn ihr sie verwenden dürft. Videos kommen **nicht** ins Repo, und filmt niemanden ohne Einverständnis.
+- **Videos:** Am besten eigene Aufnahmen. Fremde Videos nur, wenn ihr sie verwenden dürft. Filmt niemanden ohne Einverständnis.
 
-**Ergebnis:** euer Skript (z.B. `analyse.py`), ein Plot oder eine Tabelle in `out/` und ein Abschnitt im Journal: Frage, Vorgehen, Ergebnis, was nicht funktioniert hat.
-
-### Schritt 7: Bonus: Spiegeln
-
-Daten verdoppeln, indem man Bilder spiegelt: Die Labels müssen **mitgespiegelt** werden, und links/rechts tauschen.
-
-| Funktion | Eingabe | Ausgabe | Was passiert |
-|---|---|---|---|
-| `hflip_keypoint(k)` | **ein** `Keypoint` (normalisiert) | **ein neuer** `Keypoint` | markiert: `x → 1 - x`; nicht markiert (`v == 0`): unverändert |
-| `hflip_person(p)` | **eine** `Person` (normalisiert) | **eine neue** `Person` | alle Punkte spiegeln, dann nach `FLIP_INDEX` neu ordnen (linkes Auge ↔ rechtes Auge usw.). Box: `cx → 1 - cx` |
-
-```bash
-uv run pytest tests/test_augment.py -q
-```
+**Ergebnis:** euer Skript (z.B. `analyse.py`), ein Plot oder eine Tabelle in `out/` und ein Abschnitt im Bericht: Frage, Vorgehen, Ergebnis.
 
 ---
 
 ## 3. Runde 2: FP-Prinzipien
 
-Euer Code läuft. Jetzt schauen wir, **warum er so gebaut ist**. Funktionale Programmierung (FP) ist keine Spezialität von Haskell: Ihr trefft die Prinzipien fast überall, wo ihr arbeitet.
+Euer Code läuft. Jetzt schauen wir, **warum er so gebaut ist**.
 
 ### 3.0 FP ist überall
 
 | Sprache / Framework | Typische FP-Prinzipien |
 |---|---|
 | **Python** | `map`/`filter`, Comprehensions, `functools.reduce`/`partial`/`lru_cache`, `itertools`, `@dataclass(frozen=True)`, Generatoren |
-| **React (+ Redux)** | Komponenten sind reine Funktionen ihrer Props; State wird nie verändert, sondern ersetzt; Reducer `(state, action) -> state` (wie `step` in Schritt 6) |
+| **React (+ Redux)** | Komponenten sind reine Funktionen ihrer Props; State wird nie verändert, sondern ersetzt; Reducer `(state, action) -> state` (wie `step` in Schritt 4) |
 | **Apache Spark / PySpark** | unveränderliche Datasets, `map`/`filter`/`reduce`, lazy Auswertung (verwandt mit Hugging Face `datasets`) |
 | **Java** | Streams, Lambdas, Records |
 | **C#** | LINQ (`Select`, `Where`, `Aggregate`) |
@@ -679,7 +585,7 @@ Euer Code läuft. Jetzt schauen wir, **warum er so gebaut ist**. Funktionale Pro
 | **SQL** | deklarativ: Ergebnis beschreiben, nicht Schritte |
 | **Kotlin / Scala / F#** | FP als Teil der Sprache: Immutability, Pattern Matching, Higher-Order Functions |
 
-### Recherche im Betrieb (pro Person, ca. 20 min)
+### Recherche im Betrieb (jede Person, ca. 20 min)
 
 Fragt Kolleginnen und Kollegen, schaut in Projekte oder Dokumentationen eures Lehrbetriebs:
 
@@ -687,50 +593,48 @@ Fragt Kolleginnen und Kollegen, schaut in Projekte oder Dokumentationen eures Le
 - Welches **Software-Design** steckt dahinter (z.B. Web-App, Microservices, Datenpipeline, Event-getrieben)?
 - Welche **FP-Prinzipien** sind dort am prominentesten, und **wo zeigen sie sich**?
 
-Schreibt **3 bis 5 Sätze pro Person** ins Journal (Abschnitt "FP-Recherche").
+Eure Antworten kommen in **Teil B** des Berichts (ein Block pro Person). Dort beschreibt ihr auch, wo ein FP-Prinzip fehlt und welches Problem dadurch entsteht, ähnlich wie in den `bad/`-Skripten unten.
 
 **Beispiel-Antwort (React):**
 > Unser Betrieb baut Web-Oberflächen mit React und Redux. Eine Komponente ist eine Funktion, die aus Props die Anzeige berechnet, ohne etwas zu verändern: das ist eine reine Funktion. Der State wird nie direkt verändert, sondern im Reducer `(state, action) -> state` durch einen neuen Wert ersetzt. Das macht Fehler nachvollziehbar, weil man jede Aktion einzeln abspielen kann. Das ist dasselbe Muster wie `step` in unserer Kniebeugen-Zählung.
 
 Wenn ihr in eurem Betrieb wenig Offensichtliches findet: Das ist selbst eine Aussage. Schaut, welche Prinzipien trotzdem versteckt vorkommen (z.B. `map`/`filter` im Code, SQL-Abfragen, Streams).
 
-### Ablauf der Abschnitte 3.1 bis 3.6
+### Ablauf der Abschnitte 3.1 bis 3.4
 
 Pro Abschnitt:
 
-1. **Prinzip**: kurz erklärt.
-2. **Wo in eurem Code**: Schaut euch die Stelle an.
+1. **Prinzip**: kurz erklärt, mit Stellen in eurem Code.
+2. **Was bringt es?**: der Nutzen in einem Satz.
 3. **Kaputt machen**: Das Skript in `bad/` ist **fertig**, ihr startet es nur.
-4. **Beobachtet**: 2 bis 3 Fragen. Antwortet im Journal in euren eigenen Worten.
-5. **Reparieren**: nur bei 3.3 und 3.4.
+4. **Beobachtet**: 2 bis 3 Fragen. Sie führen zu Frage 3 von Teil A im Bericht: *Was geht schief ohne dieses Prinzip?* Antwortet in euren eigenen Worten.
+5. **Reparieren**: nur bei 3.3.
 
-Die `bad/`-Skripte brauchen die Lösungen aus Runde 1 (die Funktionen müssen laufen). Startet immer **vom Projektordner** mit `-m` (kein `/` im Namen, kein `.py`).
+Die `bad/`-Skripte brauchen eure Lösungen aus Runde 1. Startet immer **vom Projektordner** mit `-m` (kein `/` im Namen, kein `.py`).
 
-### 3.1 Schritt 1: Unveränderlichkeit und Aliasing
+### 3.1 Immutability und Aliasing
 
-**Prinzip:** Wenn Daten unveränderlich sind, kann niemand sie hinter eurem Rücken ändern. Veränderbare Daten (Listen, Dicts) haben ein Problem: Zwei Namen können auf **dasselbe** Objekt zeigen (Aliasing), und eine Änderung über den einen Namen sieht man am anderen. In Haskell ist alles unveränderlich, `Person` und `Keypoint` sind deshalb `NamedTuple`s.
+**Prinzip:** Immutability (Unveränderlichkeit) heisst: Ein Wert wird nach dem Bauen nie mehr geändert, man baut stattdessen einen neuen. Bei euch ist das `tuple(Keypoint(...) for ...)` in `parse_label_line` und `to_pixels`: Ein Tupel aus `NamedTuple`s lässt sich nicht verändern. Veränderbare Daten (Listen, Dicts) haben ein Problem: Zwei Namen können auf **dasselbe** Objekt zeigen (Aliasing), und eine Änderung über den einen Namen sieht man am anderen. In Haskell ist alles unveränderlich.
 
-**Wo in eurem Code:** `Keypoint`/`Person` in `pipeline/types.py` und `parse_label_file`, die ein **Tupel** zurückgibt.
+**Was bringt es?** Niemand kann Daten hinter eurem Rücken ändern, darum könnt ihr Werte gefahrlos weitergeben und teilen.
 
 **Kaputt machen:**
 
 ```bash
-uv run python -m bad.b1_clean_inplace
+uv run python -m bad.b1_aliasing
 ```
-
-Das Skript entfernt "unmarkierte" Keypoints direkt aus einer Liste, in einer Schleife.
 
 **Beobachtet:**
 
-1. Sind nachher wirklich alle unmarkierten Punkte weg? Wie viele Keypoints haben die Personen vorher und nachher?
-2. `before` und `rows` waren zwei Namen. Was ist mit `before` passiert und warum?
-3. Warum zeigt `kps[13]` nach dem Aufräumen auf einen anderen Punkt (oder gibt einen `IndexError`)? Was ändert sich daran, wenn `Person.keypoints` ein Tupel ist?
+1. Warum ist `backup` auch verändert, obwohl ihr es nie angefasst habt?
+2. Warum bleibt `p` in Teil 3 unverändert? Was passiert in Teil 2, und warum?
+3. Was geht ohne Immutability schief, und wo könnte das in eurem Betrieb passieren (Teil A, Frage 3; Teil B)?
 
-### 3.2 Schritt 2: Reine Funktionen
+### 3.2 Pure functions
 
-**Prinzip:** Eine **reine** Funktion liefert bei gleichen Argumenten immer dasselbe Ergebnis und hat keine Nebenwirkungen (verändert nichts ausserhalb). Reine Funktionen kann man einzeln testen, in beliebiger Reihenfolge aufrufen und beliebig oft wiederholen. Man nennt das **referenzielle Transparenz**: Man könnte den Aufruf durch sein Ergebnis ersetzen.
+**Prinzip:** Eine pure function (reine Funktion) liefert bei gleichen Argumenten immer dasselbe Ergebnis und hat keine side effects (Nebenwirkungen: verändert nichts ausserhalb). Das seht ihr an `return Person(box=box, keypoints=kps, score=p.score)` in `to_pixels`: Die Funktion baut eine **neue** Person, die alte bleibt. Man nennt das referenzielle Transparenz: Man könnte den Aufruf durch sein Ergebnis ersetzen. Auch `angle_at` und `knee_angle` sind pure.
 
-**Wo in eurem Code:** `to_pixels`, `angle_at`, `knee_angle` in `pipeline/geometry.py`. `to_pixels` gibt eine **neue** Person zurück.
+**Was bringt es?** Pure Funktionen kann man einzeln testen, in beliebiger Reihenfolge aufrufen und beliebig oft wiederholen.
 
 **Kaputt machen:**
 
@@ -746,33 +650,11 @@ Das Skript hat eine `to_pixels_inplace`-Variante, die die Koordinaten in der Dat
 2. Was passiert, wenn man die Reihenfolge "Winkel berechnen / Skelett zeichnen" vertauscht? Wäre das bei eurer reinen `to_pixels` auch so?
 3. Wie stark weicht der Winkel nach der Doppel-Skalierung ab? Warum ändert sich ein Winkel nicht, wenn man x und y mit **demselben** Faktor skaliert, hier aber schon?
 
-### 3.3 Schritt 3: Funktionen als Werte und Closures
+### 3.3 Functional core, imperative shell und Memoization
 
-**Prinzip:** In FP sind Funktionen **Werte**: Man kann sie übergeben, zurückgeben und in Listen speichern (Higher-Order Functions: `filter`, `map`, `any_person`, `all_of`). Eine **Closure** ist eine Funktion, die Werte aus ihrer Umgebung "mitnimmt" (bei euch das `n` in `min_labelled(n)`). Vorsicht: Eine Closure merkt sich die **Variable**, nicht ihren Wert, solange die Variable veränderbar ist (Late Binding). Haskell kennt das Problem nicht: Ein Name ist an genau einen Wert gebunden.
+**Prinzip:** Programme brauchen side effects (Dateien laden, Modell starten), aber man hält sie in einer dünnen unreinen Schale (imperative shell) und den Rest in einem reinen Kern (functional core). `result_to_persons` ist der Kern: nur Zahlen rein, Personen raus, einfach zu testen. `get_model`, `predict_batch` und `predict_image` sind die Schale. Memoization (Zwischenspeichern) mit `@lru_cache` auf `get_model` ist nur bei Funktionen erlaubt, deren Ergebnis **vollständig** von den Argumenten abhängt: Der Cache merkt sich das Ergebnis pro Argumente. Hängt es von mehr ab (z.B. einer globalen Variable), liefert der Cache veraltete Werte. In Haskell macht der Typ (`IO`) die Unreinheit sichtbar.
 
-**Wo in eurem Code:** `min_labelled`, `any_person`, `all_of` in `pipeline/filters.py`.
-
-**Kaputt machen:**
-
-```bash
-uv run python -m bad.b3_late_binding
-```
-
-Es zählt Personen mit mindestens 3, 8 und 12 markierten Keypoints, einmal mit Lambdas in einer Schleife, einmal mit `min_labelled(n)`.
-
-**Beobachtet:**
-
-1. Was fällt an der ersten Zeile (Lambdas in der Comprehension) auf? Welche Zahlen erwartet ihr, welche seht ihr?
-2. Welchen Wert von `n` benutzen die Lambdas, und **wann** wird er nachgeschlagen?
-3. Warum verhält sich `min_labelled(n)` anders?
-
-**Reparieren:** Ersetzt in `bad/b3_late_binding.py` die Lambdas in der Schleife durch Aufrufe von `min_labelled(n)` (es steht schon als Vergleich im Skript). Probiert alternativ `lambda p, n=n: ...` (Default-Argument) aus und erklärt, warum das auch geht.
-
-### 3.4 Schritt 4: Reiner Kern, unreine Schale, Memoisierung
-
-**Prinzip:** Programme brauchen Nebenwirkungen (Dateien laden, Modell starten), aber man hält sie in einer dünnen **Schale** und den Rest als **reinen Kern**. `result_to_persons` ist rein und einfach zu testen; `get_model` und `predict_batch` sind die unreine Schale. **Memoisierung** (`lru_cache`) darf man nur bei reinen Funktionen einsetzen, denn der Cache merkt sich Ergebnis pro **Argumente**. Hängt das Ergebnis von mehr ab (z.B. einer globalen Variable), liefert der Cache veraltete Werte. In Haskell macht der Typ (`IO`) die Unreinheit sichtbar.
-
-**Wo in eurem Code:** `result_to_persons` (Kern) gegen `get_model`, `predict_batch`, `_persons_of` (Schale). `get_model` ist mit `lru_cache` memoisiert: Das ist okay, weil das Argument `weights` das Ergebnis vollständig bestimmt.
+**Was bringt es?** Der reine Kern ist ohne Modell und ohne Dateien testbar, und Memoization spart Rechenzeit, solange die Funktion rein ist.
 
 **Kaputt machen:**
 
@@ -792,31 +674,11 @@ Eine Funktion `count_people` zählt Personen auf Bild 110, liest dabei aber ein 
 
 **Optional:** Das Dataset-`map` hat auch einen Cache (Dateien `cache-*.arrow` unter `data/coco8-pose-ds/`, gilt nur für Datasets, die von der Festplatte mit `load_from_disk` geladen wurden). Was passiert, wenn `predict_batch` ein globales `CONF` aus einem **importierten Modul** liest statt `conf` als Argument? Ändert `CONF`, startet erneut und schaut, ob neu gerechnet wird. `predict_split` gibt `conf` darum über `fn_kwargs` weiter.
 
-### 3.5 Schritt 5: Fold und Monoid
+### 3.4 State as a value und Fold
 
-**Prinzip:** Ein **Fold** (`reduce`, in Haskell `foldl`) faltet eine Liste mit einer Funktion zu einem Wert. Das klappt besonders gut, wenn die Funktion **assoziativ** ist und einen **neutralen Wert** hat (zusammen: ein **Monoid**): `add_counts` mit `ZERO`. Dann ist die Reihenfolge und Aufteilung egal, man kann Teile parallel berechnen (Spark!) und wieder zusammensetzen. Mittelwerte von Mittelwerten sind **nicht** assoziativ, darum zählt man `correct` und `total` getrennt und teilt erst am Schluss.
+**Prinzip:** Wo Zustand nötig ist (Wiederholungszähler), packt man ihn in einen **Wert** (`RepState`, state as a value) und schreibt eine pure function `step(state, angle) -> neuer state`. Das ist ein **Reducer** wie in Redux. `reduce(step, angles, START)` in `count_reps` ist dann ein fold (in Haskell `foldl`): Die Liste wird Winkel für Winkel zu einem einzigen Wert gefaltet. Es gibt keinen versteckten globalen Zähler: gleiche Eingabe, gleiches Ergebnis. `states` zeigt dasselbe als Scan (alle Zwischenzustände), `frames` ist ein Generator (lazy: ein Bild nach dem anderen im Speicher).
 
-**Wo in eurem Code:** `add_counts` + `ZERO` in `pipeline/evaluate.py`, der Fold `reduce(add_counts, ..., ZERO)` in `image_counts` und `run_pipeline.py`.
-
-**Kaputt machen:**
-
-```bash
-uv run python -m bad.b5_average
-```
-
-Das Skript fasst PCK-Werte mit `avg2(a, b) = (a + b) / 2` zusammen statt `Counts` zu addieren, vorwärts, rückwärts, und mit Teilen aus `ds_pred.shard(3, i)`.
-
-**Beobachtet:**
-
-1. `reduce(avg2, [1.0, 0.5, 0.0])` gegen die umgekehrte Liste: Was kommt heraus, und was folgt daraus für die Reihenfolge?
-2. Wie unterscheidet sich der Mittelwert über die Bilder vom korrekten Gesamt-PCK mit `add_counts`? Welche Bilder zählen bei `avg2` zu viel?
-3. Wie ändert sich das Ergebnis von `add_counts`, wenn ihr die Teile in anderer Reihenfolge zusammensetzt? Warum ist das bei `avg2` anders?
-
-### 3.6 Schritt 6: Zustand als Wert
-
-**Prinzip:** Wo Zustand nötig ist (Wiederholungszähler), packt man ihn in einen **Wert** (`RepState`) und schreibt eine reine Funktion `step(state, event) -> neuer state`. Das ist ein **Reducer** wie in Redux. `count_reps` ist dann nur ein Fold über die Winkel. Es gibt keinen versteckten globalen Zähler: gleiche Eingabe, gleiches Ergebnis. `ema` ist ein **Scan** (Fold, der alle Zwischenschritte behält), `frames` ein **Generator** (lazy: ein Bild nach dem anderen im Speicher).
-
-**Wo in eurem Code:** `step`, `count_reps`, `ema` in `pipeline/reps.py`; `RepState`, `START`, `frames`, `states` (gegeben).
+**Was bringt es?** Der Zustand ist sichtbar und gehört zum Aufruf, darum kann man jeden Schritt einzeln testen, wiederholen und im Diagramm verfolgen.
 
 **Kaputt machen:**
 
@@ -830,64 +692,52 @@ Das Skript vergleicht einen **globalen** Zähler mit eurem reinen `count_reps`.
 
 1. Was gibt `count_reps_global` beim 1. und beim 2. Aufruf auf derselben Eingabe zurück, was euer `count_reps`?
 2. Welche Information steckt bei der globalen Version in `count` und `phase`, und wo steckt sie bei `RepState`?
-3. Wie würdet ihr die globale Version testen? Und eure?
-
-### 3.7 Bonus: Schritt 7
-
-Nur wenn ihr Schritt 7 gemacht habt:
-
-```bash
-uv run python -m bad.b7_flip
-```
-
-Teile (a) und (b): Spiegeln ohne links/rechts zu tauschen, und der Test `hflip(hflip(p)) == p`.
-
-**Beobachtet:** (a) Was sieht man auf den Bildern `out/`, wenn links/rechts nicht getauscht werden? (b) Besteht der Test `hflip(hflip(p)) == p` auch bei der falschen Version? Was sagt das über die Aussagekraft von Tests?
+3. Wie würdet ihr die globale Version testen? Und eure? Was geht ohne state as a value schief?
 
 ---
 
-## 4. Journal und Abgabe
+## 4. Bericht und Abgabe
 
-Das Journal ist die Vorlage `journal.md` im Repo. Ihr füllt es **laufend** aus, nicht erst am Schluss.
-
-**Runde 1:** pro Schritt kurz: Was haben wir implementiert? Was war schwierig? Wo hat die KI geholfen, wo lag sie falsch?
-**FP-Recherche:** pro Person 3 bis 5 Sätze zum Betrieb.
-**Runde 2:** pro Schritt: Was ging kaputt (Beobachtung)? Welches FP-Prinzip verhindert das? Bezug zu eurem Betrieb?
-**Fazit:** 3 bis 4 Sätze.
+Ihr füllt die Vorlage **`bericht.md`** im Repo aus, am besten laufend. Sie hat drei Teile: Teil A (Code und FP-Prinzipien, pro Schritt drei kurze Antworten), Teil B (FP im Lehrbetrieb, ein Block pro Person) und Teil C (Fazit, KI). Optional am Schluss: Schritt 4b.
 
 ### Abgabe
 
-Euer **privates** Repo (Lehrperson als Collaborator) mit:
+Euer **privates** Repo (alle Teammitglieder und die Lehrperson `tinunit` als Collaborators) mit:
 
-- [ ] allen Tests grün (`uv run pytest -q`)
-- [ ] `uv run python run_pipeline.py` läuft
-- [ ] Video: Kniebeugen gezählt (6a); eure eigene Analyse (6b) so weit ihr gekommen seid, mit Skript und Plot oder Tabelle. Die Videos selbst nicht committen
-- [ ] `journal.md` ausgefüllt
+- [ ] Tests für die Schritte 1 bis 4 grün (`uv run pytest -q`)
+- [ ] `uv run python run_squats.py videos/kniebeugen.mp4` läuft (die Videos selbst nicht committen)
+- [ ] `bericht.md` ausgefüllt
 - [ ] ein Commit pro Schritt, mit aussagekräftiger Nachricht
 
 ### Bewertung
 
-*(wird von der Lehrperson ergänzt)*
+Bewertet wird der **Bericht: 20 Punkte**. Der Code (Tests grün, `run_squats.py` läuft) ist eine Voraussetzung und gibt keine Punkte.
+
+| Teil | Punkte |
+|---|---|
+| A: Code und FP-Prinzipien (4 Schritte × 3 Punkte) | 12 |
+| B: FP im Lehrbetrieb (pro Person, Teampunktzahl = Durchschnitt) | 6 |
+| C: Fazit und KI | 2 |
+| **Total** | **20** |
 
 ---
 
 ## 5. Spickzettel
 
-| Idee | Python | Haskell |
-|---|---|---|
-| Liste umwandeln | `[f(x) for x in xs]`, `map(f, xs)` | `map f xs` |
-| Liste filtern | `[x for x in xs if p(x)]`, `filter(p, xs)` | `filter p xs` |
-| Zusammenfalten | `reduce(f, xs, start)` | `foldl f start xs` |
-| Zwischenergebnisse | `accumulate(xs, f, initial=s)` | `scanl f s xs` |
-| Teil-Anwendung | `partial(f, a)` | `f a` |
-| Funktion zurückgeben | `def g(n): return lambda x: ...` | `g n = \x -> ...` |
-| Unveränderlich | `NamedTuple`, Tupel, `frozen=True` | alles |
-| Kopie mit Änderung | `p._replace(...)`, `{**d, "k": v}` | `p { field = v }` |
-| Fehlender Wert | `Optional[X]` (`None`) | `Maybe X` |
-| `None` weglassen | `[x for x in xs if x is not None]` | `catMaybes` / `mapMaybe` |
-| Default bei `None` | `x if x is not None else d` | `fromMaybe d x` |
-| Lazy Folge | Generator mit `yield` | normale Liste (lazy) |
-| Memoisierung | `@lru_cache` (nur bei reinen Funktionen!) | nicht nötig (rein) |
+| Idee | Begriff (EN) | Python | Haskell |
+|---|---|---|---|
+| Liste umwandeln | map | `[f(x) for x in xs]`, `map(f, xs)` | `map f xs` |
+| Liste filtern | filter | `[x for x in xs if p(x)]`, `filter(p, xs)` | `filter p xs` |
+| Zusammenfalten | fold | `reduce(f, xs, start)` | `foldl f start xs` |
+| Zwischenergebnisse | scan | `accumulate(xs, f, initial=s)` | `scanl f s xs` |
+| Funktion als Wert | higher-order function | `def g(n): return lambda x: ...` | `g n = \x -> ...` |
+| Unveränderlich | immutability | `NamedTuple`, Tupel, `frozen=True` | alles |
+| Kopie mit Änderung | copy with change | `p._replace(...)`, `{**d, "k": v}` | `p { field = v }` |
+| Keine Nebenwirkung | pure function | gleiche Eingabe, gleiche Ausgabe | alles ausser `IO` |
+| Fehlender Wert | optional | `Optional[X]` (`None`) | `Maybe X` |
+| Lazy Folge | generator | Generator mit `yield` | normale Liste (lazy) |
+| Zwischenspeichern | memoization | `@lru_cache` (nur bei reinen Funktionen!) | nicht nötig (rein) |
+| Zustand als Wert | reducer | `step(state, x) -> state` | `foldl step start xs` |
 
 ### Befehle
 
@@ -895,8 +745,8 @@ Euer **privates** Repo (Lehrperson als Collaborator) mit:
 |---|---|
 | Alle Tests | `uv run pytest -q` |
 | Tests eines Schritts | `uv run pytest tests/test_<x>.py -q` |
-| Gesamtlauf mit PCK | `uv run python run_pipeline.py` |
 | Label und Vorhersage als Bild | `uv run python visualize.py` (Ausgabe `out/`) |
 | Eigene Fotos | `uv run python run_own.py` (Fotos in `eigene/`, Ausgabe `out/eigene/`) |
-| Video auswerten | `uv run python run_squats.py video.mp4 --plot` |
-| Fehler provozieren | `uv run python -m bad.<name>` |
+| Video auswerten | `uv run python run_squats.py videos/kniebeugen.mp4 --plot` |
+| Video mit Skelett, Winkel, Zähler | `uv run python annotate_video.py videos/kniebeugen.mp4 --up 140` (Ausgabe `out/video/annotated.mp4`) |
+| Fehler provozieren | `uv run python -m bad.<name>` (`b1_aliasing`, `b2_pixels_inplace`, `b4_stale_cache`, `b6_reps`) |

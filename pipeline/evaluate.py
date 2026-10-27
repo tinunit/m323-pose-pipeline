@@ -1,4 +1,4 @@
-"""Schritt 5: Auswerten mit fold (reduce) und einem Monoid (Counts, ZERO, add_counts)."""
+"""Auswerten mit fold (reduce) und einem Monoid (Counts, ZERO, add_counts) (vorgegeben)."""
 
 import math
 from functools import partial, reduce
@@ -9,8 +9,7 @@ from pipeline.filters import labelled
 from pipeline.geometry import to_pixels
 from pipeline.types import Keypoint, Person
 
-# --- vorgegeben ---------------------------------------------------------------
-ALPHA = 0.1  # richtig, wenn Abstand <= ALPHA * Personengrösse
+ALPHA = 0.1
 
 
 class Counts(NamedTuple):
@@ -42,6 +41,23 @@ def match(gt_px: Person, preds_px: tuple[Person, ...]) -> Optional[Person]:
     return min(preds_px, key=partial(_mean_distance, gt_px))
 
 
+def person_counts(gt_px: Person, pred_px: Optional[Person], alpha: float) -> Counts:
+    """Richtige und gezählte Punkte einer Label-Person."""
+    marked = [i for i, k in enumerate(gt_px.keypoints) if k.v > 0]
+    if pred_px is None:
+        return Counts(0, len(marked))
+    size = max(gt_px.box[2], gt_px.box[3])  # grössere Seite der Label-Box (Pixel)
+    correct = sum(
+        1 for i in marked if _dist(gt_px.keypoints[i], pred_px.keypoints[i]) <= alpha * size
+    )
+    return Counts(correct, len(marked))
+
+
+def add_counts(a: Counts, b: Counts) -> Counts:
+    """Komponentenweise addieren (assoziativ, ZERO ist neutral)."""
+    return Counts(a.correct + b.correct, a.total + b.total)
+
+
 def image_counts(row: dict, alpha: float) -> Counts:
     """Counts eines Bildes: fold über alle Label-Personen."""
     w, h = row["width"], row["height"]
@@ -54,32 +70,6 @@ def image_counts(row: dict, alpha: float) -> Counts:
     )
 
 
-# --- Runde 1: eure Aufgabe ----------------------------------------------------
-def person_counts(gt_px: Person, pred_px: Optional[Person], alpha: float) -> Counts:
-    """Rein. Richtige und gezählte Punkte einer Label-Person.
-
-    Gezählt werden nur markierte Label-Keypoints (v > 0). Richtig ist ein
-    Punkt, wenn sein Abstand (`_dist`) zum gleich nummerierten vorhergesagten
-    Keypoint höchstens alpha * Personengrösse ist. Personengrösse = grössere
-    Seite der Label-Box in Pixeln (Breite oder Höhe). Die Konfidenz der
-    Vorhersage spielt keine Rolle. Bei pred_px = None: Counts(0, Anzahl
-    markierter Punkte).
-    """
-    raise NotImplementedError
-
-
-def add_counts(a: Counts, b: Counts) -> Counts:
-    """Rein. Zwei Counts komponentenweise addieren.
-
-    Die Operation ist assoziativ und ZERO ist das neutrale Element, damit
-    sie sich für reduce eignet.
-    """
-    raise NotImplementedError
-
-
 def pck(c: Counts) -> Optional[float]:
-    """Rein. Anteil richtiger Punkte (correct / total).
-
-    None, wenn total == 0 (nichts gezählt).
-    """
-    raise NotImplementedError
+    """Anteil richtiger Punkte, None bei total == 0."""
+    return None if c.total == 0 else c.correct / c.total

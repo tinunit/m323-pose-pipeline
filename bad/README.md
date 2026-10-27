@@ -5,25 +5,22 @@ erst, wenn eure Funktionen aus Runde 1 fertig sind (sie rufen eure Implementieru
 
 Jedes Skript macht genau eine Sache absichtlich falsch. Oben in der Datei stehen
 Beobachtungsfragen als Kommentar. Lest sie **vor** dem Start, startet das Skript, und
-notiert eure Antworten und eure Erklärung in `journal.md`.
+notiert eure Antworten und eure Erklärung in `bericht.md` (Teil A).
 
 Start (aus dem Repo-Root, ohne `.py`):
 
 ```
-uv run python -m bad.b1_clean_inplace
+uv run python -m bad.b1_aliasing
 ```
 
-| Schritt | Datei | Prinzip |
+| Abschnitt | Datei | Prinzip |
 |---|---|---|
-| 1 | `b1_clean_inplace.py` | Unveränderlichkeit: Daten in der Liste verändern (Aliasing) |
-| 2 | `b2_pixels_inplace.py` | Reine Funktionen: `to_pixels` überschreibt die Koordinaten |
-| 3 | `b3_late_binding.py` | Funktionen als Werte: Lambdas in einer Schleife (Closure) |
-| 4 | `b4_stale_cache.py` | Reiner Kern, unreine Schale: `lru_cache` mit globalem `CONF` |
-| 5 | `b5_average.py` | Fold und Monoid: Mittelwerte statt `Counts` addieren |
-| 6 | `b6_reps.py` | Zustand als Wert: globaler Zähler statt `step`/`count_reps` |
-| 7 (Bonus) | `b7_flip.py` | Zu schwacher Test: Spiegeln ohne links/rechts zu tauschen |
+| 3.1 | `b1_aliasing.py` | Immutability (Unveränderlichkeit): zwei Namen, ein Objekt (Aliasing) |
+| 3.2 | `b2_pixels_inplace.py` | Pure functions (reine Funktionen): `to_pixels` überschreibt die Koordinaten |
+| 3.3 | `b4_stale_cache.py` | Functional core, imperative shell und Memoization: `lru_cache` mit globalem `CONF` |
+| 3.4 | `b6_reps.py` | State as a value und Fold: globaler Zähler statt `step`/`count_reps` |
 
 Hinweise:
-- `b4`, `b5` und `b7` laden das YOLO-Modell (`yolo11n-pose.pt`) und brauchen etwas Zeit.
+- `b4` lädt das YOLO-Modell (`yolo11n-pose.pt`) und braucht etwas Zeit.
 - Ändert die Skripte nicht, um den Fehler zu "reparieren". Die Reparatur steht jeweils
   in der Anleitung (Runde 2).

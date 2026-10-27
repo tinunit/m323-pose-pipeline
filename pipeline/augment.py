@@ -1,4 +1,4 @@
-"""Schritt 7 (optional): Bilder spiegeln. Zufall kommt als Argument (Seed) herein."""
+"""Bilder spiegeln. Zufall kommt als Argument (Seed) herein (vorgegeben)."""
 
 import random
 from typing import Callable
@@ -8,32 +8,26 @@ from PIL import Image
 from pipeline.data import person_to_row, row_to_person
 from pipeline.types import Keypoint, Person
 
-# --- vorgegeben ---------------------------------------------------------------
 # Nach dem Spiegeln tauschen links und rechts die Plätze (Auge 1 <-> Auge 2, ...).
 FLIP_INDEX = (0, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 14, 13, 16, 15)
 
 
-# --- Runde 1: eure Aufgabe ----------------------------------------------------
 def hflip_keypoint(k: Keypoint) -> Keypoint:
-    """Rein. Einen normalisierten Keypoint horizontal spiegeln: x -> 1 - x.
-
-    Nur markierte Punkte (v > 0) werden gespiegelt; nicht markierte Punkte
-    (v = 0) bleiben unverändert, sonst entstünde aus (0, 0) ein Punkt bei x = 1.
-    """
-    raise NotImplementedError
+    """Markierte Punkte: x -> 1 - x. Nicht markierte bleiben unverändert."""
+    return Keypoint(1 - k.x, k.y, k.v) if k.v > 0 else k
 
 
 def hflip_person(p: Person) -> Person:
-    """Rein. Eine Person horizontal spiegeln (neue Person, Eingabe unverändert).
+    """Alle Keypoints spiegeln, dann links/rechts neu ordnen. Box: cx -> 1 - cx."""
+    flipped = tuple(hflip_keypoint(k) for k in p.keypoints)
+    cx, cy, w, h = p.box
+    return Person(
+        box=(1 - cx, cy, w, h),
+        keypoints=tuple(flipped[FLIP_INDEX[i]] for i in range(len(flipped))),
+        score=p.score,
+    )
 
-    Alle Keypoints spiegeln, dann links und rechts neu ordnen (siehe
-    FLIP_INDEX: der neue Punkt i ist der gespiegelte Punkt FLIP_INDEX[i]).
-    Die Box-Mitte wird gespiegelt (cx -> 1 - cx), cy, w, h und score bleiben.
-    """
-    raise NotImplementedError
 
-
-# --- vorgegeben ---------------------------------------------------------------
 def hflip_row(row: dict) -> dict:
     """Bild und alle Label-Personen zusammen spiegeln. Die Spalte pred entfällt."""
     return {

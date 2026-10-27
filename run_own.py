@@ -1,4 +1,4 @@
-"""Schritt 4, Teil C: eigene Bilder durch die Pose-Pipeline.
+"""Teil C (Schritt 3): eigene Bilder durch die Pose-Pipeline.
 
     uv run python run_own.py                 # alle Bilder in eigene/
     uv run python run_own.py foto1.jpg ...   # einzelne Dateien
@@ -30,7 +30,7 @@ FONT = ImageFont.load_default(size=18)
 
 
 def normalize_image(im: Image.Image, max_side: int = MAX_SIDE) -> Image.Image:
-    """Rein: neues Bild, aufrecht (EXIF-Orientierung angewendet), RGB, längste Seite <= max_side.
+    """Pure. neues Bild, aufrecht (EXIF-Orientierung angewendet), RGB, längste Seite <= max_side.
 
     Handyfotos speichern die Drehung oft nur als EXIF-Tag. Ohne exif_transpose
     sieht YOLO die Person liegend.
@@ -43,13 +43,13 @@ def normalize_image(im: Image.Image, max_side: int = MAX_SIDE) -> Image.Image:
 
 
 def image_paths(args: list[str], in_dir: Path = IN_DIR) -> list[Path]:
-    """Unrein: Dateien aus den Argumenten oder alle Bilder im Ordner in_dir."""
+    """Impure. Dateien aus den Argumenten oder alle Bilder im Ordner in_dir."""
     paths = [Path(a) for a in args] if args else sorted(in_dir.expanduser().glob("*"))
     return [p for p in paths if p.suffix.lower() in SUFFIXES]
 
 
 def to_row(name: str, im: Image.Image) -> dict:
-    """Rein: ein Beispiel im Dataset-Schema, ohne Labels (persons = [])."""
+    """Pure. ein Beispiel im Dataset-Schema, ohne Labels (persons = [])."""
     return {"file_name": name, "image": im, "width": im.width, "height": im.height, "persons": []}
 
 
@@ -58,7 +58,7 @@ def fmt(a) -> str:
 
 
 def annotate_row(row: dict, kp_conf: float = KP_CONF) -> tuple[Image.Image, list[tuple[float, float | None, float | None]]]:
-    """Rein: Skelette aller erkannten Personen + Kniewinkel. Gibt Bild und (score, links, rechts) zurück."""
+    """Pure. Skelette aller erkannten Personen + Kniewinkel. Gibt Bild und (score, links, rechts) zurück."""
     w, h = row["width"], row["height"]
     preds = tuple(confident(to_pixels(row_to_person(d), w, h), kp_conf) for d in row["pred"])
     out = row["image"].convert("RGB")

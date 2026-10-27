@@ -19,7 +19,7 @@ def main() -> None:
     ds = load_or_build()                                   # 1. Laden
     train = ds["train"]
     selected = train.filter(all_of(any_person(min_labelled(8)), max_persons(3)))
-    print(f"Filter (train): {len(train)} -> {len(selected)} Bilder")  # 2. Filtern (Schritt 3)
+    print(f"Filter (train): {len(train)} -> {len(selected)} Bilder")  # 2. Filtern
 
     val = ds["val"]
     ds_pred = predict_split(val)                           # 3. Inferenz (val)
