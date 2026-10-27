@@ -205,8 +205,26 @@ def coordinates_figure(split: str, stem: str, person: int, joint=(6, 8, 10), joi
           f"Winkel px {ang_px:.1f}  norm {ang_n:.1f}  Bild {W}x{H}")
 
 
+def first_steps_figure() -> None:
+    """Die drei Beispiele aus "YOLO in 5 Zeilen": genau das, was result.save(...) liefert."""
+    panels = [
+        header(plotted("yolo11n-cls.pt", IMG / "train" / "000000000036.jpg"), "Beispiel 1: Klassifikation"),
+        header(plotted("yolo11n-cls.pt", IMG / "val" / "000000000110.jpg"), "Beispiel 2: Klassifikation"),
+        header(plotted("yolo11n-pose.pt", IMG / "val" / "000000000113.jpg"), "Beispiel 3: Pose"),
+    ]
+    h = 520
+    scaled = [p.resize((round(p.width * h / p.height), h)) for p in panels]
+    out = Image.new("RGB", (sum(p.width for p in scaled) + 8 * (len(scaled) - 1), h), "white")
+    x = 0
+    for p in scaled:
+        out.paste(p, (x, 0))
+        x += p.width + 8
+    out.save(OUT / "erste_schritte.jpg", quality=85)
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
+    first_steps_figure()
     coordinates_figure("val", "000000000113", person=0)
     tasks_figure(IMG / "val" / "000000000113.jpg")
     keypoints_figure("val", "000000000113", person=0)
