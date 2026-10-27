@@ -33,25 +33,38 @@ def parse_label_line(line: str) -> Optional[Person]:
 
     Eine gültige Zeile hat N_VALUES (56) Zahlen, durch Leerzeichen getrennt:
     Klasse, Box (cx cy w h), dann 17 mal (x y v). Die Klasse wird nicht
-    gebraucht. Die Box wird als 4er-Tupel übernommen, die Keypoints als Tupel
-    von 17 `Keypoint`. Das Feld `score` der Person behält seinen Standardwert.
+    gebraucht. Gibt None zurück, wenn die Anzahl Werte nicht stimmt oder sich
+    ein Wert nicht in eine Zahl umwandeln lässt.
 
-    Gibt None zurück, wenn die Anzahl Werte nicht stimmt oder sich ein Wert
-    nicht in eine Zahl umwandeln lässt.
+    Beispiel (gekürzt): "0  0.67 0.62 0.65 0.73  0.52 0.38 2  0.55 0.35 2  ..."
+                         │  └──── box ────────┘  └ Nase ┘    └ Auge L ┘
+                         Klasse
     """
-    raise NotImplementedError
+    parts = line.split()
+    if len(parts) != N_VALUES:
+        return None
+    try:
+        nums = tuple(float(s) for s in parts)  # 56 Zahlen
+    except ValueError:
+        return None
 
+    # TODO: die Box: die 4 Zahlen nach der Klasse, als Tupel (cx, cy, w, h)
+    box = ...
+    # TODO: die 17 Keypoints als Tupel von Keypoint(x, y, v).
+    #       Keypoint 0 steht in nums[5:8], Keypoint 1 in nums[8:11], ...
+    kps = ...
 
-def parse_label_file(text: str) -> tuple[Person, ...]:
-    """Rein. Alle gültigen Zeilen einer Label-Datei als Tupel von Personen.
-
-    Ungültige Zeilen (parse_label_line gibt None) und Leerzeilen werden
-    weggelassen. Leerer Text ergibt ().
-    """
-    raise NotImplementedError
+    return Person(box=box, keypoints=kps)
 
 
 # --- vorgegeben ---------------------------------------------------------------
+def parse_label_file(text: str) -> tuple[Person, ...]:
+    """Rein. Alle gültigen Zeilen einer Label-Datei als Tupel von Personen.
+
+    Ruft eure parse_label_line für jede Zeile auf und lässt None weg.
+    """
+    parsed = (parse_label_line(line) for line in text.splitlines())
+    return tuple(p for p in parsed if p is not None)
 
 
 def person_to_row(p: Person) -> dict:

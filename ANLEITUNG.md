@@ -303,10 +303,10 @@ for r in results:                                        # ein Ergebnis pro Bild
 In `pipeline/types.py`, unveränderlich (`NamedTuple`):
 
 ```python
-class Keypoint(NamedTuple):
-    x: float
-    y: float
-    v: float                       # Label: 0, 1 oder 2. Vorhersage: Konfidenz 0..1
+class Keypoint(NamedTuple):      # z.B. die Nase: Keypoint(x=0.520, y=0.381, v=2.0)
+    x: float                       # Anteil der Bildbreite: 0 = links, 1 = rechts (0.520 = etwas rechts der Mitte)
+    y: float                       # Anteil der Bildhöhe: 0 = oben, 1 = unten (0.381 = im oberen Drittel)
+    v: float                       # Label: 0 = nicht markiert, 1 = verdeckt, 2 = sichtbar. Vorhersage: Konfidenz 0..1
 
 class Person(NamedTuple):
     box: tuple[float, float, float, float]   # cx, cy, w, h
@@ -326,23 +326,27 @@ Allgemeine Regeln: **Funktionen verändern ihre Argumente nicht**, sie geben neu
 
 **Ziel:** Label-Dateien einlesen und in `Person`-Objekte umwandeln.
 
-**Gegeben** (`pipeline/data.py`): `FEATURES`, `person_to_row`, `row_to_person`, `labelled_count`, `load_split`, `load_all`, `load_or_build`, `summary`. Sie bauen aus euren Personen ein Hugging-Face-`Dataset` und speichern es auf der Festplatte.
+**Gegeben** (`pipeline/data.py`): `parse_label_file` (ruft eure Funktion für jede Zeile auf), `FEATURES`, `person_to_row`, `row_to_person`, `labelled_count`, `load_split`, `load_all`, `load_or_build`, `summary`. Sie bauen aus euren Personen ein Hugging-Face-`Dataset` und speichern es auf der Festplatte.
 
 **Eure Aufgabe** (`pipeline/data.py`):
 
 | Funktion | Eingabe | Ausgabe | Was passiert |
 |---|---|---|---|
-| `parse_label_line(line)` | **eine Zeile** als `str`, z.B. `"0 0.193 0.405 … 0.151 0.911 1"` | **eine** `Person`, oder `None` | 56 Zahlen → Box + 17 `Keypoint`. `None`, wenn die Zeile nicht genau 56 Zahlen hat oder etwas keine Zahl ist |
-| `parse_label_file(text)` | **ganzer Dateiinhalt** als `str` (mehrere Zeilen, eine pro Person) | **Tupel von Personen** `tuple[Person, ...]`, z.B. 3 Personen für `000000000113.txt`; leere Datei → `()` | jede Zeile mit `parse_label_line`, ungültige (`None`) weglassen |
+| `parse_label_line(line)` | **eine Zeile** als `str`, z.B. `"0 0.193 0.405 … 0.151 0.911 1"` | **eine** `Person`, oder `None` | 56 Zahlen → Box + 17 `Keypoint` |
+
+Der Anfang ist schon da: Zeile aufteilen, Anzahl prüfen, in Zahlen umwandeln (`nums`, ein Tupel mit 56 Zahlen), und am Schluss `return Person(box=box, keypoints=kps)`. **Ihr ergänzt nur `box` und `kps`.**
 
 Das Lesen der Datei von der Festplatte (`Path.read_text()`) und das Bauen des Datasets erledigt das gegebene `load_split`. Eure Funktionen bekommen nur **Text** und geben **Werte** zurück.
 
 **Hinweis:**
 
 ```python
-nums = tuple(float(s) for s in line.split())        # 56 Zahlen
-box = nums[1:5]                                     # cx cy w h
-# Keypoint i steht an nums[5 + 3*i : 8 + 3*i]  ->  Keypoint(x, y, v)
+# nums = (0.0, 0.67, 0.62, 0.65, 0.73, 0.52, 0.38, 2.0, 0.55, 0.35, 2.0, ...)
+#          │    └──── box ─────────┘  └─ Keypoint 0 ─┘ └─ Keypoint 1 ─┘
+#        Klasse
+# Slicing: nums[a:b] gibt die Elemente a bis b-1 als Tupel
+# Keypoint i steht an nums[5 + 3*i : 8 + 3*i]   ->  Keypoint(x, y, v)
+# 17 Keypoints als Tupel: tuple(... for i in range(17))
 ```
 
 **Prüfen:**
