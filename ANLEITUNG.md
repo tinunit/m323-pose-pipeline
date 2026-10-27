@@ -2,8 +2,68 @@
 
 Ihr baut eine Pipeline, die auf Bildern Personen erkennt, Gelenkpunkte bestimmt, das Ergebnis mit Labels vergleicht und im Video Bewegungen auswertet. Alles funktional in Python. Zuerst **implementiert** ihr (Runde 1), danach **erkennt ihr die FP-Prinzipien** in eurem eigenen Code (Runde 2).
 
+## Los geht's: YOLO in 5 Zeilen
+
+Ein trainiertes Modell zu benutzen, ist erstaunlich wenig Code. Probiert es aus, bevor ihr weiterlest.
+
+> **Vorher:** Repo eingerichtet und `uv sync` ausgeführt? Sonst zuerst [Repo einrichten](#repo-einrichten-einmal-pro-team) und [Setup prüfen](#setup-prüfen).
+
+Legt im Projektordner eine Datei `erste_schritte.py` an und startet sie mit `uv run python erste_schritte.py`.
+
+**Beispiel 1: Was ist auf dem Bild?** (Klassifikation)
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("yolo11n-cls.pt")                     # Modell laden (wird beim ersten Mal heruntergeladen)
+result = model("data/coco8-pose/images/train/000000000036.jpg", verbose=False)[0]
+print("Das ist:", result.names[result.probs.top1], f"({result.probs.top1conf:.0%} sicher)")
+result.save("out/klassifikation.jpg")              # Bild mit Ergebnis speichern
+```
+
+Ausgabe:
+
+```
+Das ist: umbrella (100% sicher)
+```
+
+**Beispiel 2:** Ändert nur den Bildpfad auf `data/coco8-pose/images/val/000000000110.jpg`. Ausgabe: `Das ist: pizza (50% sicher)`.
+
+**Beispiel 3: Wo sind die Personen und ihre Gelenke?** (Pose)
+
+```python
+from ultralytics import YOLO
+
+model = YOLO("yolo11n-pose.pt")                    # nur der Modellname ist anders
+result = model("data/coco8-pose/images/val/000000000113.jpg", verbose=False)[0]
+print("Personen gefunden:", len(result.boxes))
+print("Nase der ersten Person (x, y):", result.keypoints.xy[0][0].int().tolist())
+result.save("out/pose.jpg")
+```
+
+Ausgabe:
+
+```
+Personen gefunden: 3
+Nase der ersten Person (x, y): [239, 129]
+```
+
+![Die drei Beispiele: Schirm, Pizza, Pose](docs/img/erste_schritte.jpg)
+
+Öffnet die Bilder in `out/`. Statt `result.save(...)` zeigt `result.show()` das Bild direkt an.
+
+**Probiert selbst:**
+
+- Ein eigenes Foto (Haustier, etwas auf dem Tisch) mit dem Klassifikationsmodell. Am besten klappt es mit **einem** grossen Gegenstand in der Mitte.
+- `val/000000000136.jpg` mit dem Klassifikationsmodell. Was sagt es, und was ist wirklich auf dem Bild? Warum liegt es daneben? (Tipp: Das Modell kennt nur 1000 feste Kategorien.)
+
+**Merkt euch für später:** Beispiel 3 liefert genau die Daten, mit denen wir arbeiten: pro Person eine Box und 17 Punkte mit Koordinaten. Kapitel 1 zeigt, wie diese Daten aufgebaut sind.
+
+---
+
 ## Inhalt
 
+- [Los geht's: YOLO in 5 Zeilen](#los-gehts-yolo-in-5-zeilen)
 0. [Worum es geht](#0-worum-es-geht)
 1. [YOLO und Pose](#1-yolo-und-pose)
 2. [Runde 1: Implementieren](#2-runde-1-implementieren)
@@ -102,60 +162,7 @@ Am Anfang sind nur die Tests **eurer** Funktionen rot. Euer Ziel pro Schritt: di
 
 ## 1. YOLO und Pose
 
-Ihr braucht kein Wissen über neuronale Netze, nur ein Bild davon, was aus dem Modell herauskommt. Zuerst probiert ihr es aus, dann schauen wir genauer hin.
-
-### Los geht's: YOLO in 5 Zeilen
-
-Ein trainiertes Modell zu benutzen, ist erstaunlich wenig Code. Legt im Projektordner eine Datei `erste_schritte.py` an und startet sie mit `uv run python erste_schritte.py`.
-
-**Beispiel 1: Was ist auf dem Bild?** (Klassifikation)
-
-```python
-from ultralytics import YOLO
-
-model = YOLO("yolo11n-cls.pt")                     # Modell laden (wird beim ersten Mal heruntergeladen)
-result = model("data/coco8-pose/images/train/000000000036.jpg", verbose=False)[0]
-print("Das ist:", result.names[result.probs.top1], f"({result.probs.top1conf:.0%} sicher)")
-result.save("out/klassifikation.jpg")              # Bild mit Ergebnis speichern
-```
-
-Ausgabe:
-
-```
-Das ist: umbrella (100% sicher)
-```
-
-**Beispiel 2:** Ändert nur den Bildpfad auf `data/coco8-pose/images/val/000000000110.jpg`. Ausgabe: `Das ist: pizza (50% sicher)`.
-
-**Beispiel 3: Wo sind die Personen und ihre Gelenke?** (Pose)
-
-```python
-from ultralytics import YOLO
-
-model = YOLO("yolo11n-pose.pt")                    # nur der Modellname ist anders
-result = model("data/coco8-pose/images/val/000000000113.jpg", verbose=False)[0]
-print("Personen gefunden:", len(result.boxes))
-print("Nase der ersten Person (x, y):", result.keypoints.xy[0][0].int().tolist())
-result.save("out/pose.jpg")
-```
-
-Ausgabe:
-
-```
-Personen gefunden: 3
-Nase der ersten Person (x, y): [239, 129]
-```
-
-![Die drei Beispiele: Schirm, Pizza, Pose](docs/img/erste_schritte.jpg)
-
-Öffnet die Bilder in `out/`. Statt `result.save(...)` zeigt `result.show()` das Bild direkt an.
-
-**Probiert selbst:**
-
-- Ein eigenes Foto (Haustier, etwas auf dem Tisch) mit dem Klassifikationsmodell. Am besten klappt es mit **einem** grossen Gegenstand in der Mitte.
-- `val/000000000136.jpg` mit dem Klassifikationsmodell. Was sagt es, und was ist wirklich auf dem Bild? Warum liegt es daneben? (Tipp: Das Modell kennt nur 1000 feste Kategorien.)
-
-**Merkt euch für später:** Beispiel 3 liefert genau die Daten, mit denen wir arbeiten: pro Person eine Box und 17 Punkte mit Koordinaten. Der Rest dieses Kapitels zeigt, wie diese Daten aufgebaut sind.
+Ihr braucht kein Wissen über neuronale Netze, nur ein Bild davon, was aus dem Modell herauskommt. Ausprobiert habt ihr YOLO schon ([Los geht's](#los-gehts-yolo-in-5-zeilen)), jetzt schauen wir genauer hin.
 
 ### Was ist YOLO?
 
