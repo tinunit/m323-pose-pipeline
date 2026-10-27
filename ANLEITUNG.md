@@ -65,7 +65,7 @@ Nase der ersten Person (x, y): [239, 129]
 0. [Worum es geht](#0-worum-es-geht): Ablauf, Pipeline, Daten, Team, Setup
 1. [YOLO und Pose](#1-yolo-und-pose)
 2. [Runde 1: Implementieren](#2-runde-1-implementieren)
-   - [Schritt 1: Daten laden](#schritt-1-daten-laden) · [2: Geometrie](#schritt-2-geometrie) · [3: YOLO](#schritt-3-yolo) · [4: Video](#schritt-4-video) · [4b: eigene Analyse (optional)](#4b-eure-eigene-analyse-optional)
+   - [Schritt 1: Daten laden](#schritt-1-daten-laden) · [2: Geometrie](#schritt-2-geometrie) · [3: YOLO](#schritt-3-yolo) · [4: Video](#schritt-4-video) · [4b: eigene Analyse (Bonus)](#4b-eure-eigene-analyse-bonus)
 3. [Runde 2: FP-Prinzipien](#3-runde-2-fp-prinzipien)
    - [3.0 FP ist überall + Recherche](#30-fp-ist-überall) · [3.1 Immutability](#31-immutability-und-aliasing) · [3.2 Pure functions](#32-pure-functions) · [3.3 Functional core, Memoization](#33-functional-core-imperative-shell-und-memoization) · [3.4 State as a value, Fold](#34-state-as-a-value-und-fold)
 4. [Bericht und Abgabe](#4-bericht-und-abgabe)
@@ -89,9 +89,9 @@ Zusammen ca. 4 Stunden (Richtwert).
 | 4 | **Runde 2, 3.1 bis 3.4:** `bad/`-Skripte starten, beobachten | 45 min | Teil A, **Fragen 2 und 3** pro Schritt |
 | 5 | Bericht fertig machen, abgeben | 15 min | Teil C |
 | 6 | Puffer | 30 min | |
-| | **Optional zum Schluss:** Schritt 4b, eure eigene Analyse | so weit ihr kommt | optionaler Abschnitt |
+| | **Bonus zum Schluss:** Schritt 4b, eure eigene Analyse | so weit ihr kommt | Bonus (bis 4 Punkte) |
 
-**Nur der Bericht gibt Punkte** (20 Punkte). Der Code (Tests grün) ist Voraussetzung. Details in [Kapitel 4](#4-bericht-und-abgabe).
+**Nur der Bericht gibt Punkte** (20 Punkte, dazu bis 4 Bonuspunkte für Schritt 4b). Der Code (Tests grün) ist Voraussetzung. Details in [Kapitel 4](#4-bericht-und-abgabe).
 
 ### Die Pipeline
 
@@ -466,7 +466,7 @@ uv run python run_squats.py videos/kniebeugen.mp4 --plot     # euer Dateiname
 
 **→ [bericht.md](bericht.md), Teil A, Schritt 4, Frage 1.** Commit. Weiter mit [Runde 2](#3-runde-2-fp-prinzipien).
 
-#### 4b: Eure eigene Analyse (optional)
+#### 4b: Eure eigene Analyse (Bonus)
 
 **Erst nach Runde 2, so weit ihr in der Zeit kommt.** Stellt eine eigene Frage zu einer Bewegung und beantwortet sie mit der Pipeline. Es gibt keine richtige Lösung.
 
@@ -502,7 +502,7 @@ Danach wie in 4a: `drop_missing`, `ema`, eigene Schwellen und `count_reps`, oder
 
 **Gut zu wissen:** `predict_image` liefert alle Personen, aber **ohne Identität** (Person 0 ist nicht in jedem Bild dieselbe), nehmt am besten Ausschnitte mit einer Person. Kleine, weit entfernte Personen werden schlecht erkannt. Nehmt kurze Clips (10 bis 30 s). Filmt niemanden ohne Einverständnis, fremde Videos nur, wenn ihr sie verwenden dürft.
 
-**Ergebnis:** euer Skript (z.B. `analyse.py`), ein Plot oder eine Tabelle in `out/`. **→ [bericht.md](bericht.md), Abschnitt "Optional: Schritt 4b"** (Frage, Vorgehen, Ergebnis).
+**Ergebnis:** euer Skript (z.B. `analyse.py`), ein Plot oder eine Tabelle in `out/`. **→ [bericht.md](bericht.md), Abschnitt "Bonus: Schritt 4b"** (bis 4 Bonuspunkte: Frage, Vorgehen, Ergebnis, was nicht funktioniert hat).
 
 ---
 
@@ -628,8 +628,8 @@ Ihr füllt die Vorlage **[bericht.md](bericht.md)** (im Projektordner) laufend a
 | A | Code und FP-Prinzipien, pro Schritt 3 Fragen | Frage 1: Runde 1, nach jedem Schritt. Fragen 2 und 3: Runde 2, 3.1 bis 3.4 | 12 (4 Schritte × 3) |
 | B | FP im Lehrbetrieb, ein Block pro Person | Runde 2, 3.0 | 6 (Teampunktzahl = Durchschnitt) |
 | C | Fazit und KI | zum Schluss | 2 |
-| | Optional: Schritt 4b | ganz am Schluss | keine |
 | | **Total** | | **20** |
+| Bonus | Schritt 4b, eigene Analyse | ganz am Schluss | bis 4 |
 
 Kurz und konkret, in eigenen Worten: Bewertet wird, ob die Erklärung stimmt, nicht die Länge.
 

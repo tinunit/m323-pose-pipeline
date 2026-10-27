@@ -2,7 +2,7 @@
 
 Team: (2 bis 4 Namen)  ·  Repo-Link:
 
-Bewertung: total 20 Punkte. Teil A 12 · Teil B 6 · Teil C 2.
+Bewertung: total 20 Punkte. Teil A 12 · Teil B 6 · Teil C 2. Dazu bis 4 Bonuspunkte für Schritt 4b.
 
 Schreibt kurz und konkret, in eigenen Worten. Bewertet wird, ob die Erklärung stimmt, nicht die Länge. Füllt den Bericht laufend aus:
 
@@ -11,7 +11,7 @@ Schreibt kurz und konkret, in eigenen Worten. Bewertet wird, ob die Erklärung s
 | Runde 1, nach jedem Schritt | Teil A, Frage 1 des Schritts |
 | Runde 2, Recherche (Anleitung 3.0) | Teil B, jede Person ihren Block |
 | Runde 2, Anleitung 3.1 bis 3.4 | Teil A, Fragen 2 und 3 des passenden Schritts |
-| zum Schluss | Teil C (optional: Schritt 4b) |
+| zum Schluss | Teil C (Bonus: Schritt 4b) |
 
 ---
 
@@ -98,6 +98,9 @@ Jede Person füllt einen eigenen Abschnitt aus, aus Sicht ihres Lehrbetriebs. Je
 
 ---
 
-## Optional: Schritt 4b, eigene Analyse (keine Punkte)
+## Bonus: Schritt 4b, eigene Analyse (bis 4 Bonuspunkte)
 
-Frage, Vorgehen, Ergebnis.
+- Welche Frage wolltet ihr beantworten, und mit welchem Video (Quelle, Länge, Perspektive)? (1 Punkt)
+- Vorgehen: welche Punkte, Winkel oder Positionen, welche Funktionen und welches Skript? (1 Punkt)
+- Ergebnis: Zahl, Plot oder Tabelle in `out/`. (1 Punkt)
+- Was hat nicht funktioniert, und warum? (1 Punkt)
