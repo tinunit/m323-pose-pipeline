@@ -28,7 +28,7 @@ def plot(raw: list, smooth: list[float], out: str = "out/angles.png") -> None:
 
     fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(range(len(raw)), [float("nan") if a is None else a for a in raw], label="roh", alpha=0.5)
-    ax.plot(range(len(smooth)), smooth, label=f"geglättet (alpha={ALPHA})")
+    ax.plot([i for i, a in enumerate(raw) if a is not None], smooth, label=f"geglättet (alpha={ALPHA})")
     ax.axhline(DOWN_BELOW, color="red", linestyle="--", label=f"down < {DOWN_BELOW}")
     ax.axhline(UP_ABOVE, color="green", linestyle="--", label=f"up > {UP_ABOVE}")
     ax.set_xlabel("Bild")
