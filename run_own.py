@@ -1,4 +1,4 @@
-"""Teil C (Schritt 3): eigene Bilder durch die Pose-Pipeline.
+"""Schritt 3, eigenes Foto: eigene Bilder durch die Pose-Pipeline.
 
     uv run python run_own.py                 # alle Bilder in eigene/
     uv run python run_own.py foto1.jpg ...   # einzelne Dateien

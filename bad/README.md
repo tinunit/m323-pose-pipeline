@@ -5,7 +5,8 @@ erst, wenn eure Funktionen aus Runde 1 fertig sind (sie rufen eure Implementieru
 
 Jedes Skript macht genau eine Sache absichtlich falsch. Oben in der Datei stehen
 Beobachtungsfragen als Kommentar. Lest sie **vor** dem Start, startet das Skript, und
-notiert eure Antworten und eure Erklärung in `bericht.md` (Teil A).
+notiert eure Antworten und eure Erklärung in [bericht.md](../bericht.md) (Teil A, Fragen 2
+und 3 beim passenden Schritt).
 
 Start (aus dem Repo-Root, ohne `.py`):
 
@@ -22,5 +23,4 @@ uv run python -m bad.b1_aliasing
 
 Hinweise:
 - `b4` lädt das YOLO-Modell (`yolo11n-pose.pt`) und braucht etwas Zeit.
-- Ändert die Skripte nicht, um den Fehler zu "reparieren". Die Reparatur steht jeweils
-  in der Anleitung (Runde 2).
+- Ändert die Skripte nicht. Die Fragen dazu stehen in der Anleitung, Runde 2 (3.1 bis 3.4).

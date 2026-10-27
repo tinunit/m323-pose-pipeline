@@ -4,7 +4,14 @@ Team: (2 bis 4 Namen)  ·  Repo-Link:
 
 Bewertung: total 20 Punkte. Teil A 12 · Teil B 6 · Teil C 2.
 
-Schreibt kurz und konkret, in eigenen Worten. Bewertet wird, ob die Erklärung stimmt, nicht die Länge. Füllt den Bericht laufend aus.
+Schreibt kurz und konkret, in eigenen Worten. Bewertet wird, ob die Erklärung stimmt, nicht die Länge. Füllt den Bericht laufend aus:
+
+| Wann | Was |
+|---|---|
+| Runde 1, nach jedem Schritt | Teil A, Frage 1 des Schritts |
+| Runde 2, Recherche (Anleitung 3.0) | Teil B, jede Person ihren Block |
+| Runde 2, Anleitung 3.1 bis 3.4 | Teil A, Fragen 2 und 3 des passenden Schritts |
+| zum Schluss | Teil C (optional: Schritt 4b) |
 
 ---
 
@@ -18,7 +25,7 @@ Pro Schritt drei kurze Antworten (je 1 bis 3 Sätze):
 
 ### Schritt 1: Daten laden – Immutability (3 Punkte)
 
-Skript: `bad.b1_aliasing`
+Skript: `bad.b1_aliasing` (Anleitung 3.1)
 
 1. 
 2. 
@@ -26,7 +33,7 @@ Skript: `bad.b1_aliasing`
 
 ### Schritt 2: Geometrie – Pure functions (3 Punkte)
 
-Skript: `bad.b2_pixels_inplace`
+Skript: `bad.b2_pixels_inplace` (Anleitung 3.2)
 
 1. 
 2. 
@@ -34,7 +41,7 @@ Skript: `bad.b2_pixels_inplace`
 
 ### Schritt 3: YOLO – Functional core, imperative shell und Memoization (3 Punkte)
 
-Skript: `bad.b4_stale_cache`
+Skript: `bad.b4_stale_cache` (Anleitung 3.3)
 
 1. 
 2. 
@@ -42,7 +49,7 @@ Skript: `bad.b4_stale_cache`
 
 ### Schritt 4: Video – State as a value und Fold (3 Punkte)
 
-Skript: `bad.b6_reps`
+Skript: `bad.b6_reps` (Anleitung 3.4)
 
 1. 
 2. 

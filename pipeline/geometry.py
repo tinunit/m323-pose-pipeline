@@ -1,6 +1,7 @@
 """Schritt 2: Geometrie mit pure functions (reinen Funktionen)."""
 
 import math
+from pathlib import Path
 from typing import Optional
 
 from pipeline.types import Keypoint, Person
@@ -64,5 +65,6 @@ if __name__ == "__main__":
             img = row["image"].convert("RGB")
             for d in row["persons"]:
                 img = draw_skeleton(img, to_pixels(row_to_person(d), w, h))
+            Path("out").mkdir(exist_ok=True)
             img.save("out/skeleton.png")
             saved = True

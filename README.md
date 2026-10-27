@@ -2,7 +2,9 @@
 
 Ihr baut eine Pipeline, die auf Bildern Personen erkennt, Gelenkpunkte (Keypoints) bestimmt, mit Labels vergleicht und Bewegungen in einem Video auswertet, funktional in Python. Zuerst implementieren (Runde 1), dann FP-Prinzipien im eigenen Code entdecken (Runde 2).
 
-**Einstieg: [ANLEITUNG.md](ANLEITUNG.md).** Dort steht alles, vom Setup bis zur Abgabe. Euren Bericht schreibt ihr in `bericht.md`.
+**Einstieg: [ANLEITUNG.md](ANLEITUNG.md).** Dort steht alles, vom Setup bis zur Abgabe.
+
+**Bewertet wird euer Bericht [bericht.md](bericht.md) (20 Punkte).** Ihr füllt ihn während des Projekts laufend aus.
 
 ## Setup
 
@@ -48,4 +50,4 @@ Startet alles im Projektordner.
 
 ## Arbeitsweise
 
-Bericht (`bericht.md`) laufend ausfüllen, ein Commit pro Schritt. Eigene Fotos (`eigene/`) und Videos werden **nicht** committed.
+Bericht ([bericht.md](bericht.md)) laufend ausfüllen, ein Commit pro Schritt. Eigene Fotos (`eigene/`) und Videos werden **nicht** committed.
