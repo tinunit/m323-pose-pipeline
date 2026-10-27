@@ -10,3 +10,6 @@ data/coco8-pose-ds/
 *.mov
 # eigene Fotos
 eigene/
+
+# eigene Videos (nie committen)
+videos/

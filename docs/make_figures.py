@@ -222,6 +222,61 @@ def first_steps_figure() -> None:
     out.save(OUT / "erste_schritte.jpg", quality=85)
 
 
+def coco_beispiel_figure(split: str = "train", stem: str = "000000000036") -> None:
+    """Ein Bild mit seiner Label-Zeile: links das Bild mit Box und Punkten, rechts der Text der Datei."""
+    im, p_px = load(split, stem, 0)
+    tokens = (LBL / split / f"{stem}.txt").read_text().split()
+    yellow, green = (242, 183, 1), (120, 220, 120)
+    marks = {0: (255, 70, 220), 9: (0, 200, 230), 10: (255, 130, 0)}  # Keypoint -> Farbe
+    # --- links: Bild
+    left = draw_skeleton(im, p_px)
+    d = ImageDraw.Draw(left)
+    cx, cy, w, h = p_px.box
+    d.rectangle([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], outline=yellow, width=4)
+    d.ellipse([cx - 7, cy - 7, cx + 7, cy + 7], fill=yellow, outline="black", width=2)
+    d.text((cx + 12, cy - 12), "Box-Mitte", fill=yellow, font=SMALL, stroke_width=3, stroke_fill="black")
+    for i, col in marks.items():
+        k = p_px.keypoints[i]
+        d.ellipse([k.x - 11, k.y - 11, k.x + 11, k.y + 11], outline=col, width=4)
+        text = f"{i} {NAMES[i]}"
+        tw = d.textlength(text, font=SMALL)
+        tx = min(max(4, k.x - tw - 16 if i in (9, 10) else k.x + 16), left.width - tw - 4)
+        d.text((tx, k.y - 9), text, fill=col, font=SMALL, stroke_width=3, stroke_fill="black")
+    left = left.resize((600, round(left.height * 600 / left.width)))
+    left = header(left, f"{split}/{stem}.jpg")
+    # --- rechts: Textdatei in Monospace
+    mono = ImageFont.truetype("DejaVuSansMono.ttf", 17)
+    cw = mono.getlength("0")
+    lh = 28
+    rows: list[list[tuple[str, tuple[int, int, int]]]] = []
+    white = (235, 235, 235)
+    rows.append([(tokens[0], green)] + [(t, yellow) for t in tokens[1:5]])
+    for i in range(17):
+        col = marks.get(i, white)
+        rows.append([(t, col) for t in tokens[5 + 3 * i: 8 + 3 * i]])
+    # zwei Tripel pro Zeile
+    lines = [rows[0]] + [rows[1 + i] + rows[2 + i] if i + 1 < 17 else rows[1 + i] for i in range(0, 17, 2)]
+    right_w, top = 600, 78
+    right = Image.new("RGB", (right_w, left.height), (30, 30, 30))
+    r = ImageDraw.Draw(right)
+    r.text((8, 5), f"labels/{split}/{stem}.txt (eine Zeile)", fill=(255, 255, 255), font=FONT)
+    r.text((8, 40), "Klasse, Box (gelb): cx cy w h", fill=yellow, font=SMALL)
+    for n, line in enumerate(lines):
+        x, y = 8, top + n * lh
+        for t, col in line:
+            r.text((x, y), t, fill=col, font=mono)
+            x += (len(t) + 1) * cw
+    y = top + len(lines) * lh + 12
+    r.text((8, y), "Danach 17 Mal: x y v (Tripel)", fill=(190, 190, 190), font=SMALL)
+    r.text((8, y + 24), "Punkt 0 (Nase), 9 und 10 (Handgelenke) farbig,", fill=(190, 190, 190), font=SMALL)
+    r.text((8, y + 46), "gleiche Farbe wie auf dem Bild. v = 2: sichtbar,", fill=(190, 190, 190), font=SMALL)
+    r.text((8, y + 68), "v = 0: nicht markiert (Werte 0 0 0).", fill=(190, 190, 190), font=SMALL)
+    out = Image.new("RGB", (left.width + right_w, left.height), (30, 30, 30))
+    out.paste(left, (0, 0))
+    out.paste(right, (left.width, 0))
+    out.save(OUT / "coco_beispiel.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     first_steps_figure()
@@ -229,4 +284,5 @@ if __name__ == "__main__":
     tasks_figure(IMG / "val" / "000000000113.jpg")
     keypoints_figure("val", "000000000113", person=0)
     label_vs_pred_figure("val", "000000000113", person=0)
+    coco_beispiel_figure()
     print("\n".join(str(p) for p in sorted(OUT.glob("*.png"))))

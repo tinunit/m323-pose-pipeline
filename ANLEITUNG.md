@@ -81,13 +81,41 @@ Nase der ersten Person (x, y): [239, 129]
 
 ![Überblick über die Pipeline mit den Schritten 1 bis 7](docs/img/pipeline_ueberblick.svg)
 
+### Der Datensatz: COCO
+
+**COCO** ("Common Objects in Context") ist ein grosser, öffentlicher Bilddatensatz mit über 200'000 Bildern von Alltagsszenen. Bei vielen Personen haben Menschen von Hand 17 Körperpunkte markiert (Nase, Schultern, Ellbogen, ...). Wir nutzen **COCO8-Pose**: nur 8 Bilder davon (4 `train`, 4 `val`), klein genug für den Laptop.
+
+So liegen die Daten im Repo:
+
+```
+data/coco8-pose/
+├── images/
+│   ├── train/   000000000036.jpg, ...
+│   └── val/     ...
+└── labels/
+    ├── train/   000000000036.txt, ...
+    └── val/     ...
+```
+
+Bild und Label-Datei haben **denselben Namen** (`.jpg` bzw. `.txt`) und liegen im gleichen Unterordner (`train` oder `val`). Pro Person gibt es eine Zeile. (Die `.cache`-Dateien in `labels/` könnt ihr ignorieren.)
+
+**Beispiel:** `train/000000000036.jpg` zeigt eine Person mit Schirm, also hat `labels/train/000000000036.txt` genau eine Zeile.
+
+![Bild 000000000036 mit Box, drei markierten Punkten und der passenden Label-Zeile](docs/img/coco_beispiel.png)
+
+```
+0 0.671279 0.617945 0.645759 0.726859 0.519751 0.381250 2.000000 0.550936 0.348438 2.000000 ... 0.000000 0.000000 0.000000
+```
+
+Die erste Zahl `0` bedeutet "Person", dann folgt die Box, dann 17 × (`x y v`). Genau erklärt in [Kapitel 1: Eine Label-Zeile zerlegt](#eine-label-zeile-zerlegt).
+
 ### Daten und Modell
 
 Wir arbeiten mit zwei Quellen, die **dieselbe Art von Daten** liefern:
 
 | | Testdaten mit Labels | Inferenz mit YOLO |
 |---|---|---|
-| Woher | **COCO8-Pose**: 8 Bilder aus dem öffentlichen COCO-Datensatz (4 `train`, 4 `val`), im Repo unter `data/coco8-pose/` | das vortrainierte Modell **YOLO11n-Pose** (`yolo11n-pose.pt`) |
+| Woher | **COCO8-Pose** (siehe oben), im Repo unter `data/coco8-pose/` | das vortrainierte Modell **YOLO11n-Pose** (`yolo11n-pose.pt`) |
 | Was | Pro Bild eine Textdatei: Menschen haben für jede Person die 17 Gelenkpunkte von Hand markiert. Das ist die "richtige Antwort" | Das Modell bekommt nur das Bild und sagt die 17 Gelenkpunkte pro Person **vorher** |
 | Wird bei uns zu | Personen (`Person`, Schritt 1) | Personen (`Person`, Schritt 4) |
 
