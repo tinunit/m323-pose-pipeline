@@ -109,6 +109,22 @@ Bild und Label-Datei haben **denselben Namen** (`.jpg` bzw. `.txt`) und liegen i
 
 Die erste Zahl `0` bedeutet "Person", dann folgt die Box, dann 17 × (`x y v`). Genau erklärt in [Kapitel 1: Eine Label-Zeile zerlegt](#eine-label-zeile-zerlegt).
 
+Diese Labels wurden **von Menschen von Hand markiert**: Jemand hat jeden Körperpunkt einzeln angeklickt. Sie gelten als die **richtige Antwort** (englisch *ground truth*), an der wir das Modell messen.
+
+Hier liegen die Labels (gelb) und die Vorhersage von YOLO (cyan) auf demselben Bild übereinander:
+
+![Label (gelb) und YOLO-Vorhersage (cyan) übereinander, mit Zoom auf den Kopf](docs/img/label_vs_yolo_overlay.png)
+
+YOLO kommt den Labels sehr nahe (im Schnitt etwa 12 Pixel Abweichung bei einem 640 Pixel breiten Bild), aber nicht exakt.
+
+### Wie gut ist das Modell? (kurz)
+
+Ein vorhergesagter Punkt zählt als **richtig**, wenn er näher beim Label-Punkt liegt als eine **Toleranz** (10 % der Personengrösse). **PCK** ist der Anteil der richtigen Punkte. Für unsere 4 `val`-Bilder liegt er bei etwa **0.78** (90 von 116 Punkten).
+
+![PCK: richtig, wenn der vorhergesagte Punkt im Toleranzkreis liegt](docs/img/pck_toleranz.svg)
+
+Das ist nur zum Verstehen: Ihr müsst das nicht auswendig können. Gerechnet wird es in Schritt 5.
+
 ### Daten und Modell
 
 Wir arbeiten mit zwei Quellen, die **dieselbe Art von Daten** liefern:
@@ -536,7 +552,12 @@ uv run python run_pipeline.py
 
 #### 6a: Beispiel Kniebeugen zählen
 
-Filmt euch gegenseitig: etwa 10 Kniebeugen, **von der Seite**, ganzer Körper im Bild, ruhige Kamera, 10 bis 20 Sekunden.
+Filmt euch gegenseitig: etwa 10 Kniebeugen, 10 bis 20 Sekunden. Tipps:
+
+- **Kopf UND Füsse** im Bild, 3 bis 4 m Abstand.
+- **Genau von der Seite** filmen.
+- Kamera ruhig (Stativ oder ablegen).
+- Nicht am Anfang oder Ende ins Bild hinein- oder hinauslaufen (oder das wegschneiden).
 
 **Gegeben** (`pipeline/reps.py`): `RepState`, `START`, die Schwellen (`DOWN_BELOW`, `UP_ABOVE`), `frames` (Generator, ein Bild nach dem anderen), `angles` (Kniewinkel pro Bild), `drop_missing`, `states`. `run_squats.py` komplett.
 
@@ -572,6 +593,12 @@ uv run python run_squats.py video.mp4 --plot
 ```
 
 `run_squats.py` zählt Wiederholungen und speichert mit `--plot` den Winkelverlauf in `out/angles.png` (`--side right` für das rechte Bein). Schaut euch den Plot an: Passen die Schwellen 100° und 160° zu euren Kniebeugen? Passt sie sonst an.
+
+> **Typisches Problem (unser Testvideo):** Etwa 10 Kniebeugen, gezählt wurden nur **3** (links) bzw. **4** (rechts) mit 100°/160° und `ema` 0.5. Gründe: Die Füsse waren abgeschnitten, also waren die Fussgelenke unsicher und bei vielen Bildern fehlte der Winkel (612 von 1023). Beim Aufstehen erreichte das Knie nur 140 bis 155°, also nie die 160°. Mit `UP_ABOVE = 140` kamen **9** bzw. **8** heraus.
+>
+> **Lehre:** Schaut euch den Plot an (`--plot`, `out/angles.png`) und passt `DOWN_BELOW` und `UP_ABOVE` in `pipeline/reps.py` an eure Kurve an. Bei vielen Lücken weniger glätten (`alpha` 0.8 bis 1.0) oder nochmals filmen.
+
+**Dauer:** Rechnet mit etwa 10 Bildern pro Sekunde auf einem Laptop (nur CPU). Ein Video von 30 s mit 30 Bildern/s (900 Bilder) braucht etwa 1.5 Minuten.
 
 #### 6b: Eure eigene Analyse
 

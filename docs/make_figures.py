@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageFont
 from ultralytics import YOLO
 
 from pipeline.data import parse_label_file
-from pipeline.draw import draw_skeleton
+from pipeline.draw import EDGES, draw_skeleton
 from pipeline.geometry import angle_at, to_pixels
 from pipeline.inference import confident, predict_image
 from pipeline.types import Person
@@ -277,6 +277,78 @@ def coco_beispiel_figure(split: str = "train", stem: str = "000000000036") -> No
     out.save(OUT / "coco_beispiel.png")
 
 
+def label_yolo_overlay_figure(split: str = "train", stem: str = "000000000036") -> None:
+    """Label (gelb) und YOLO-Vorhersage (cyan) übereinander, mit Linien zwischen zusammengehörigen Punkten.
+
+    Links das Gesamtbild mit Zoom-Rechteck, rechts der 4x vergrösserte Kopfbereich."""
+    yellow, cyan = (242, 183, 1), (0, 150, 199)
+    im, gt = load(split, stem, 0)
+    preds = tuple(to_pixels(confident(p), im.width, im.height) for p in predict_image(im))
+    pred = min(preds, key=lambda q: abs(q.box[0] - gt.box[0]) + abs(q.box[1] - gt.box[1]))
+    dists = [((g.x - q.x) ** 2 + (g.y - q.y) ** 2) ** 0.5
+             for g, q in zip(gt.keypoints, pred.keypoints) if g.v > 0 and q.v > 0]
+    mean = sum(dists) / len(dists)
+    print(f"Overlay: {len(dists)} Punkte, mittlere Abweichung {mean:.1f} px, max {max(dists):.1f} px")
+
+    def render(scale: float, box: tuple[int, int, int, int], line: int, r: int) -> Image.Image:
+        """Ausschnitt box (Originalpixel) mit Label, Vorhersage und Verbindungslinien, vergrössert."""
+        x0, y0, x1, y1 = box
+        out = im.crop(box).resize((round((x1 - x0) * scale), round((y1 - y0) * scale)), Image.LANCZOS)
+        d = ImageDraw.Draw(out)
+
+        def pt(k):
+            return ((k.x - x0) * scale, (k.y - y0) * scale)
+
+        for p, col in ((gt, yellow), (pred, cyan)):
+            for i, j in EDGES:
+                if p.keypoints[i].v > 0 and p.keypoints[j].v > 0:
+                    d.line([pt(p.keypoints[i]), pt(p.keypoints[j])], fill=col, width=line)
+        for g, q in zip(gt.keypoints, pred.keypoints):
+            if g.v > 0 and q.v > 0:
+                d.line([pt(g), pt(q)], fill="black", width=line + 2)
+                d.line([pt(g), pt(q)], fill="white", width=max(1, line - 1))
+        for p, col, rr in ((gt, yellow, r), (pred, cyan, max(2, r - 2))):
+            for k in p.keypoints:
+                if k.v > 0:
+                    x, y = pt(k)
+                    d.ellipse([x - rr, y - rr, x + rr, y + rr], fill=col, outline="black")
+        return out
+
+    main = render(1.1, (0, 0, im.width, im.height), 2, 5)
+    # Zoom auf den Kopf: Mitte der Kopfpunkte, 4x
+    head = [k for k in gt.keypoints[:5] if k.v > 0]
+    hx = sum(k.x for k in head) / len(head)
+    hy = sum(k.y for k in head) / len(head)
+    half = 60
+    zbox = (int(hx - half), int(hy - half), int(hx + half), int(hy + half))
+    zoom = render(4, zbox, 3, 8)
+    d = ImageDraw.Draw(main)
+    sx = 1.1
+    d.rectangle([zbox[0] * sx, zbox[1] * sx, zbox[2] * sx, zbox[3] * sx], outline="white", width=3)
+
+    left = header(main, f"{split}/{stem}.jpg")
+    right_w, gap = zoom.width, 8
+    right = Image.new("RGB", (right_w, left.height), (30, 30, 30))
+    ImageDraw.Draw(right).text((8, 5), "Zoom (4x)", fill=(255, 255, 255), font=FONT)
+    right.paste(zoom, (0, 32))
+    r = ImageDraw.Draw(right)
+    ty = 32 + zoom.height + 16
+    for n, txt in enumerate(("Zoom: Abweichung nur wenige Pixel.", f"Mittlere Abweichung: {mean:.0f} px", "(über alle markierten Punkte)")):
+        r.text((10, ty + 26 * n), txt, fill=(255, 255, 255), font=SMALL if n else FONT)
+    # Legende
+    ly = ty + 100
+    r.ellipse([12, ly, 28, ly + 16], fill=yellow, outline="black")
+    r.text((38, ly - 2), "Label (von Hand markiert)", fill="white", font=SMALL)
+    r.ellipse([12, ly + 30, 28, ly + 46], fill=cyan, outline="black")
+    r.text((38, ly + 28), "YOLO (Vorhersage)", fill="white", font=SMALL)
+    r.line([(10, ly + 69), (30, ly + 69)], fill="white", width=2)
+    r.text((38, ly + 60), "gleicher Punkt", fill="white", font=SMALL)
+    out = Image.new("RGB", (left.width + gap + right_w, left.height), (30, 30, 30))
+    out.paste(left, (0, 0))
+    out.paste(right, (left.width + gap, 0))
+    out.save(OUT / "label_vs_yolo_overlay.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     first_steps_figure()
@@ -285,4 +357,5 @@ if __name__ == "__main__":
     keypoints_figure("val", "000000000113", person=0)
     label_vs_pred_figure("val", "000000000113", person=0)
     coco_beispiel_figure()
+    label_yolo_overlay_figure()
     print("\n".join(str(p) for p in sorted(OUT.glob("*.png"))))
