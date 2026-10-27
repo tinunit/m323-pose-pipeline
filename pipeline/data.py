@@ -53,6 +53,7 @@ def parse_label_line(line: str) -> Optional[Person]:
     # TODO: die 17 Keypoints als Tupel von Keypoint(x, y, v).
     #       Keypoint 0 steht in nums[5:8], Keypoint 1 in nums[8:11], ...
     kps = ...
+    raise NotImplementedError("Schritt 1: box und kps ergänzen, dann diese Zeile löschen")
 
     return Person(box=box, keypoints=kps)
 

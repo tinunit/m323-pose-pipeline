@@ -117,9 +117,8 @@ Wir arbeiten mit zwei Quellen, die **dieselbe Art von Daten** liefern:
 |---|---|---|
 | Woher | **COCO8-Pose** (siehe oben), im Repo unter `data/coco8-pose/` | das vortrainierte Modell **YOLO11n-Pose** (`yolo11n-pose.pt`) |
 | Was | Pro Bild eine Textdatei: Menschen haben für jede Person die 17 Gelenkpunkte von Hand markiert. Das ist die "richtige Antwort" | Das Modell bekommt nur das Bild und sagt die 17 Gelenkpunkte pro Person **vorher** |
-| Wird bei uns zu | Personen (`Person`, Schritt 1) | Personen (`Person`, Schritt 4) |
 
-Weil beide am Ende als `Person` vorliegen, können wir sie direkt vergleichen (Schritt 5) und mit denselben Funktionen weiterrechnen (Winkel in Schritt 2, Video in Schritt 6). Kapitel 1 zeigt, wie ähnlich die beiden Formate sind.
+Beide liefern pro Person dasselbe: eine Box und 17 Punkte. Darum können wir Labels und Vorhersagen direkt vergleichen. Kapitel 1 zeigt, wie ähnlich die beiden Formate sind.
 
 ### Die zwei Runden
 
