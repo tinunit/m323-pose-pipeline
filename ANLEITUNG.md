@@ -67,7 +67,7 @@ Nase der ersten Person (x, y): [239, 129]
 2. [Runde 1: Implementieren](#2-runde-1-implementieren)
    - [Schritt 1: Daten laden](#schritt-1-daten-laden) · [2: Geometrie](#schritt-2-geometrie) · [3: YOLO](#schritt-3-yolo) · [4: Video](#schritt-4-video) · [4b: eigene Analyse (Bonus)](#4b-eure-eigene-analyse-bonus)
 3. [Runde 2: FP-Prinzipien](#3-runde-2-fp-prinzipien)
-   - [3.0 FP ist überall + Recherche](#30-fp-ist-überall) · [3.1 Immutability](#31-immutability-und-aliasing) · [3.2 Pure functions](#32-pure-functions) · [3.3 Functional core, Memoization](#33-functional-core-imperative-shell-und-memoization) · [3.4 State as a value, Fold](#34-state-as-a-value-und-fold)
+   - [3.1 Immutability](#31-immutability-und-aliasing) · [3.2 Pure functions](#32-pure-functions) · [3.3 Functional core, Memoization](#33-functional-core-imperative-shell-und-memoization) · [3.4 State as a value, Fold](#34-state-as-a-value-und-fold) · [3.5 Lehrbetrieb + Recherche](#35-fp-ist-überall-euer-lehrbetrieb)
 4. [Bericht und Abgabe](#4-bericht-und-abgabe)
 5. [Spickzettel](#5-spickzettel)
 
@@ -85,8 +85,8 @@ Zusammen ca. 4 Stunden (Richtwert).
 |---|---|---|---|
 | 1 | [Setup](#setup), [Los geht's](#los-gehts-yolo-in-5-zeilen), [Kapitel 1](#1-yolo-und-pose) lesen | 30 min | Team und Repo-Link eintragen |
 | 2 | **Runde 1:** Schritte 1 bis 4a programmieren, bis die Tests grün sind | 1 h 30 | Teil A, **Frage 1** pro Schritt |
-| 3 | **Runde 2, 3.0:** Recherche im Lehrbetrieb (jede Person) | 30 min | Teil B (ein Block pro Person) |
-| 4 | **Runde 2, 3.1 bis 3.4:** `bad/`-Skripte starten, beobachten | 45 min | Teil A, **Fragen 2 und 3** pro Schritt |
+| 3 | **Runde 2, 3.1 bis 3.4:** `bad/`-Skripte starten, beobachten | 45 min | Teil A, **Fragen 2 und 3** pro Schritt |
+| 4 | **Runde 2, 3.5:** Recherche im Lehrbetrieb (jede Person) | 30 min | Teil B (ein Block pro Person) |
 | 5 | Bericht fertig machen, abgeben | 15 min | Teil C |
 | 6 | Puffer | 30 min | |
 | | **Bonus zum Schluss:** Schritt 4b, eure eigene Analyse | so weit ihr kommt | Bonus (bis 4 Punkte) |
@@ -145,7 +145,7 @@ Das ist nur zum Verstehen, ihr müsst nichts davon rechnen.
 
 ### Team und KI
 
-- Teams von **2 bis 4 Personen**. Teilt die 4 Schritte auf, aber **alle** müssen jeden Schritt erklären können. Die Recherche im Betrieb (3.0) macht **jede Person** für den eigenen Lehrbetrieb.
+- Teams von **2 bis 4 Personen**. Teilt die 4 Schritte auf, aber **alle** müssen jeden Schritt erklären können. Die Recherche im Lehrbetrieb (3.5) macht **jede Person** für den eigenen Lehrbetrieb.
 - KI-Assistenten sind **erlaubt und erwünscht**: Funktionen erklären lassen, Fehlermeldungen deuten, Tests erläutern. Gebt der KI den Docstring und den Test mit, dann werden die Vorschläge viel besser.
 - **Versteht, was ihr übernehmt.** Die Erklärungen im Bericht müssen von euch kommen. In Teil C beschreibt ihr, wo die KI geholfen hat und wo sie falsch lag.
 
@@ -508,35 +508,7 @@ Danach wie in 4a: `drop_missing`, `ema`, eigene Schwellen und `count_reps`, oder
 
 ## 3. Runde 2: FP-Prinzipien
 
-Euer Code läuft. Jetzt schauen wir, **warum er so gebaut ist**: zuerst in eurem Lehrbetrieb (3.0), dann in eurem eigenen Code (3.1 bis 3.4).
-
-### 3.0 FP ist überall
-
-| Sprache / Framework | Typische FP-Prinzipien |
-|---|---|
-| **Python** | `map`/`filter`, Comprehensions, `functools.reduce`/`partial`/`lru_cache`, `itertools`, `@dataclass(frozen=True)`, Generatoren |
-| **React (+ Redux)** | Komponenten sind reine Funktionen ihrer Props; State wird nie verändert, sondern ersetzt; Reducer `(state, action) -> state` (wie `step` in Schritt 4) |
-| **Apache Spark / PySpark** | unveränderliche Datasets, `map`/`filter`/`reduce`, lazy Auswertung |
-| **Java** | Streams, Lambdas, Records |
-| **C#** | LINQ (`Select`, `Where`, `Aggregate`) |
-| **JavaScript / TypeScript** | `map`/`filter`/`reduce`, Spread-Kopien (`{...obj}`, `[...arr]`) |
-| **SQL** | deklarativ: Ergebnis beschreiben, nicht Schritte |
-| **Kotlin / Scala / F#** | FP als Teil der Sprache: Immutability, Pattern Matching, Higher-Order Functions |
-
-#### Recherche im Betrieb (jede Person, ca. 20 min)
-
-Fragt Kolleginnen und Kollegen, schaut in Projekte oder Dokumentationen eures Lehrbetriebs:
-
-- Welche **Sprachen** und **Frameworks** verwendet euer Betrieb, welche **Art von Software** (z.B. Web-App, Microservices, Datenpipeline)?
-- Welche **FP-Prinzipien** findet ihr dort (mindestens zwei), und **wo genau** zeigen sie sich?
-- Wo **fehlt** ein FP-Prinzip, und welches Problem entsteht dadurch (ähnlich wie in den `bad/`-Skripten unten)?
-
-**Beispiel-Antwort (React):**
-> Unser Betrieb baut Web-Oberflächen mit React und Redux. Eine Komponente ist eine Funktion, die aus Props die Anzeige berechnet, ohne etwas zu verändern: eine reine Funktion. Der State wird nie direkt verändert, sondern im Reducer `(state, action) -> state` durch einen neuen Wert ersetzt. Das macht Fehler nachvollziehbar, weil man jede Aktion einzeln abspielen kann. Das ist dasselbe Muster wie `step` in unserer Kniebeugen-Zählung.
-
-Wenig Offensichtliches gefunden? Das ist selbst eine Aussage. Schaut, wo Prinzipien versteckt vorkommen (z.B. `map`/`filter`, SQL-Abfragen, Streams).
-
-**→ [bericht.md](bericht.md), Teil B:** jede Person ihren eigenen Block.
+Euer Code läuft. Jetzt schauen wir, **warum er so gebaut ist**: zuerst in eurem eigenen Code (3.1 bis 3.4), dann in eurem Lehrbetrieb (3.5).
 
 ### So geht ihr in 3.1 bis 3.4 vor
 
@@ -615,6 +587,36 @@ Jeder Abschnitt gehört zu einem Schritt aus Runde 1 und hat dieselbe Form:
 
 **→ [bericht.md](bericht.md), Teil A, Schritt 4, Fragen 2 und 3.**
 
+### 3.5 FP ist überall: euer Lehrbetrieb
+
+Die vier Prinzipien aus 3.1 bis 3.4 gibt es nicht nur in Python. Ein paar Beispiele:
+
+| Sprache / Framework | Typische FP-Prinzipien |
+|---|---|
+| **Python** | `map`/`filter`, Comprehensions, `functools.reduce`/`partial`/`lru_cache`, `itertools`, `@dataclass(frozen=True)`, Generatoren |
+| **React (+ Redux)** | Komponenten sind reine Funktionen ihrer Props; State wird nie verändert, sondern ersetzt; Reducer `(state, action) -> state` (wie `step` in Schritt 4) |
+| **Apache Spark / PySpark** | unveränderliche Datasets, `map`/`filter`/`reduce`, lazy Auswertung |
+| **Java** | Streams, Lambdas, Records |
+| **C#** | LINQ (`Select`, `Where`, `Aggregate`) |
+| **JavaScript / TypeScript** | `map`/`filter`/`reduce`, Spread-Kopien (`{...obj}`, `[...arr]`) |
+| **SQL** | deklarativ: Ergebnis beschreiben, nicht Schritte |
+| **Kotlin / Scala / F#** | FP als Teil der Sprache: Immutability, Pattern Matching, Higher-Order Functions |
+
+#### Recherche im Lehrbetrieb (jede Person, ca. 20 min)
+
+Fragt Kolleginnen und Kollegen, schaut in Projekte oder Dokumentationen eures Lehrbetriebs:
+
+- Welche **Sprachen** und **Frameworks** verwendet euer Betrieb, welche **Art von Software** (z.B. Web-App, Microservices, Datenpipeline)?
+- Welche **FP-Prinzipien** findet ihr dort (mindestens zwei), und **wo genau** zeigen sie sich?
+- Wo **fehlt** ein FP-Prinzip, und welches Problem entsteht dadurch (ähnlich wie in den `bad/`-Skripten aus 3.1 bis 3.4)?
+
+**Beispiel-Antwort (React):**
+> Unser Betrieb baut Web-Oberflächen mit React und Redux. Eine Komponente ist eine Funktion, die aus Props die Anzeige berechnet, ohne etwas zu verändern: eine reine Funktion. Der State wird nie direkt verändert, sondern im Reducer `(state, action) -> state` durch einen neuen Wert ersetzt. Das macht Fehler nachvollziehbar, weil man jede Aktion einzeln abspielen kann. Das ist dasselbe Muster wie `step` in unserer Kniebeugen-Zählung.
+
+Wenig Offensichtliches gefunden? Das ist selbst eine Aussage. Schaut, wo Prinzipien versteckt vorkommen (z.B. `map`/`filter`, SQL-Abfragen, Streams).
+
+**→ [bericht.md](bericht.md), Teil B:** jede Person ihren eigenen Block.
+
 ---
 
 ## 4. Bericht und Abgabe
@@ -626,7 +628,7 @@ Ihr füllt die Vorlage **[bericht.md](bericht.md)** (im Projektordner) laufend a
 | Teil | Inhalt | Wann | Punkte |
 |---|---|---|---|
 | A | Code und FP-Prinzipien, pro Schritt 3 Fragen | Frage 1: Runde 1, nach jedem Schritt. Fragen 2 und 3: Runde 2, 3.1 bis 3.4 | 12 (4 Schritte × 3) |
-| B | FP im Lehrbetrieb, ein Block pro Person | Runde 2, 3.0 | 6 (Teampunktzahl = Durchschnitt) |
+| B | FP im Lehrbetrieb, ein Block pro Person | Runde 2, 3.5 | 6 (Teampunktzahl = Durchschnitt) |
 | C | Fazit und KI | zum Schluss | 2 |
 | | **Total** | | **20** |
 | Bonus | Schritt 4b, eigene Analyse | ganz am Schluss | bis 4 |

@@ -9,8 +9,8 @@ Schreibt kurz und konkret, in eigenen Worten. Bewertet wird, ob die Erklärung s
 | Wann | Was |
 |---|---|
 | Runde 1, nach jedem Schritt | Teil A, Frage 1 des Schritts |
-| Runde 2, Recherche (Anleitung 3.0) | Teil B, jede Person ihren Block |
 | Runde 2, Anleitung 3.1 bis 3.4 | Teil A, Fragen 2 und 3 des passenden Schritts |
+| Runde 2, Recherche (Anleitung 3.5) | Teil B, jede Person ihren Block |
 | zum Schluss | Teil C (Bonus: Schritt 4b) |
 
 ---
